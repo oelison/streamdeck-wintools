@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>Explorer Scratch Pad Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+    <script src="sdtools.common.js"></script>
+    <script src="WindowsExplorer.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <details class="message">
+            <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
+        </details>
+        <details class="message">
+            <summary>For instructions on how to use this action <span class="linkspan"> CLICK HERE</span></summary>
+            <p>1. Open up Windows Explorer and go to the directory you want to store</p>
+            <p>2. While Explorer is the active window, Long Press this Stream Deck key until the name of the directory is shown</p>
+            <p>3. Now short press every time you want to see that directory</p>
+            <p>4. Repeat steps 1-2 every time you want to modify the directory stored</p>
+        </details>
+        <div type="checkbox" class="sdpi-item" id="dvSoundOnChange">
+            <div class="sdpi-item-label">Sound</div>
+            <div class="sdpi-item-value">
+                <input id="playSoundOnSet" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
+                <label for="playSoundOnSet" class="sdpi-item-label"><span></span>Play sound when new folder is set</label>
+            </div>
+        </div>
+        <div id="dvSoundOnSetSettings">
+            <div class="sdpi-item" id="dvPlaybackDevices">
+                <div class="sdpi-item-label">Playback Device</div>
+                <select class="sdpi-item-value select sdProperty sdList" id="playbackDevices" oninput="setSettings()" sdListTextProperty="name" sdListValueProperty="name" sdValueField="playbackDevice"></select>
+            </div>
+            <div class="sdpi-item" id="dvSoundFile">
+                <div class="sdpi-item-label">Sound File</div>
+                <div class="sdpi-item-group file" id="filepickergroup">
+                    <input class="sdpi-item-value sdProperty sdFile" type="file" id="playSoundOnSetFile" accept=".wav, .mp3, .ogg, .wma, .aac, .mp4" oninput="setSettings()">
+                    <label class="sdpi-file-info " for="playSoundOnSetFile" id="playSoundOnSetFileFilename">No file...</label>
+                    <label class="sdpi-file-label" for="playSoundOnSetFile">Choose file...</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

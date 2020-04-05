@@ -1,0 +1,128 @@
+{
+  "Actions": [
+    {
+      "Icon": "Images/copyIcon",
+      "Name": "Latest File Copy",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Copies the latest copy in a directory to a set location",
+      "UUID": "com.barraider.wintools.latestfilecopy",
+      "PropertyInspectorPath": "PropertyInspector/LatestFileCopy.html"
+    },
+    {
+      "Icon": "Images/mouseIcon",
+      "Name": "Mouse Location",
+      "States": [
+        {
+          "Image": "Images/mouseAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows you the current mouse location on a key, and lets you copy the position",
+      "UUID": "com.barraider.wintools.mouselocation",
+      "PropertyInspectorPath": "PropertyInspector/MouseLocation.html"
+    },
+    {
+      "Icon": "Images/cloudIcon",
+      "Name": "Network Card Info",
+      "States": [
+        {
+          "Image": "Images/cloudAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Shows if your network card is enabled/disabled (useful to check if VPN is enabled)",
+      "UUID": "com.barraider.wintools.networkcard",
+      "PropertyInspectorPath": "PropertyInspector/NetworkCard.html"
+    },
+    {
+      "Icon": "Images/powerIcon",
+      "Name": "Power Plan Switcher",
+      "States": [
+        {
+          "Image": "Images/powerAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Allows you to switch between the various Windows power plans",
+      "UUID": "com.barraider.wintools.powerplanswitcher",
+      "PropertyInspectorPath": "PropertyInspector/PowerPlanSwitcher.html"
+    },
+    {
+      "Icon": "Images/cloudIcon",
+      "Name": "Ping",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Pings servers and shows latency on Stream Deck",
+      "UUID": "com.barraider.wintools.ping",
+      "PropertyInspectorPath": "PropertyInspector/Ping.html"
+    },
+    {
+      "Icon": "Images/gearsIcon",
+      "Name": "Service Start/Stop",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Starts/Stops a Windows Service",
+      "UUID": "com.barraider.wintools.service",
+      "PropertyInspectorPath": "PropertyInspector/WindowsService.html"
+    },
+    {
+      "Icon": "Images/folderIcon",
+      "Name": "Windows Explorer Scratch Pad",
+      "States": [
+        {
+          "Image": "Images/folderAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Stores the current folder in your Windows Explorer so you can quickly open it later",
+      "UUID": "com.barraider.wintools.windowsexplorer",
+      "PropertyInspectorPath": "PropertyInspector/WindowsExplorer.html"
+    }
+  ],
+  "Author": "BarRaider",
+  "Description": "Advanced set of useful plugins for controlling Windows",
+  "Name": "Win Tools",
+  "Icon": "Images/pluginIcon",
+  "URL": "https://barraider.com/",
+  "Version": "1.0",
+  "CodePath": "com.barraider.wintools",
+  "Category": "Win Tools [BarRaider]",
+  "CategoryIcon": "Images/categoryIcon",
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "4.5"
+  }
+}

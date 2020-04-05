@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>PowerPlanSwitcher Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+    <script src="sdtools.common.js"></script>
+    <script src="PowerPlanSwitcher.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <details class="message">
+            <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
+        </details>
+        <details class="message">
+            <summary>Note: For this action to work correctly you must run Stream Deck as Administrator</summary>
+        </details>
+        <div class="sdpi-item" id="dvApplications">
+            <div class="sdpi-item-label">Power Plan</div>
+            <select class="sdpi-item-value select sdProperty sdList" id="powerPlans" oninput="setSettings()" sdListTextProperty="name" sdListValueProperty="guid" sdValueField="powerPlan"></select>
+        </div>
+        <div type="checkbox" class="sdpi-item" id="dvShowActivePowerPlan">
+            <div class="sdpi-item-label">Show Active</div>
+            <div class="sdpi-item-value">
+                <input id="showActivePowerPlan" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
+                <label for="showActivePowerPlan" class="sdpi-item-label"><span></span>Show active power plan</label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

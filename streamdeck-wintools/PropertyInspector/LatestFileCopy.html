@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>Latest File Copy Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+    <script src="sdtools.common.js"></script>
+    <script src="LatestFileCopy.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <details class="message">
+            <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
+        </details>
+        <details class="message">
+            <summary>For instructions on how to use this action <span class="linkspan"> CLICK HERE</span></summary>
+            <p>This action monitors a specific directory for changes. Every time a file is created/modified it will copy that file to "Save File Name"</p>
+            <p>Keep in mind this means that it will overwrite "Save File Name" every time.</p>
+            <p>For example, you can use this to always store the latest "Instant Replay" that was created to a specific file</p>
+        </details>
+        <div class="sdpi-item" id="dvWatchDirectory">
+            <div class="sdpi-item-label">Directory to watch</div>
+            <input class="sdpi-item-value sdProperty hasFileButton" disabled value="" id="watchDirectory">
+            <button class="max100 minmargin" onclick="openDirectoryPicker('Directory to watch','watchDirectory')">...</button>
+        </div>
+        <div class="sdpi-item" id="dvSaveFileName">
+            <div class="sdpi-item-label">Save File Name</div>
+            <input class="sdpi-item-value sdProperty hasFileButton" disabled value="" id="copyPath">
+            <button class="max100 minmargin" onclick="openSaveFilePicker('Copy to this file name','All files (*.*)|*.*','copyPath')">...</button>
+        </div>
+    </div>
+</body>
+</html>

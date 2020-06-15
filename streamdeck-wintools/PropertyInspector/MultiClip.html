@@ -5,30 +5,23 @@
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
     <meta name=apple-mobile-web-app-capable content=yes>
     <meta name=apple-mobile-web-app-status-bar-style content=black>
-    <title>Explorer Scratch Pad Settings</title>
+    <title>MultiClip Settings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@master/src/rangeTooltip.css">
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@master/src/rangeTooltip.js"></script>
-    <script src="WindowsExplorer.js"></script>
+    <script src="MultiClip.js"></script>
 </head>
 <body>
     <div class="sdpi-wrapper">
         <details class="message">
             <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
         </details>
-        <details class="message">
-            <summary>For instructions on how to use this action <span class="linkspan"> CLICK HERE</span></summary>
-            <p>1. Open up Windows Explorer and go to the directory you want to store</p>
-            <p>2. While Explorer is the active window, Long Press this Stream Deck key until the name of the directory is shown</p>
-            <p>3. Now short press every time you want to see that directory</p>
-            <p>4. Repeat steps 1-2 every time you want to modify the directory stored</p>
-        </details>
         <div type="checkbox" class="sdpi-item" id="dvSoundOnChange">
             <div class="sdpi-item-label">Sound</div>
             <div class="sdpi-item-value">
                 <input id="playSoundOnSet" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
-                <label for="playSoundOnSet" class="sdpi-item-label"><span></span>Play sound when new folder is set</label>
+                <label for="playSoundOnSet" class="sdpi-item-label"><span></span>Play sound when new value is set</label>
             </div>
         </div>
         <div id="dvSoundOnSetSettings">
@@ -58,6 +51,11 @@
             </div>
         </div>
         <div class="sdpi-info-label hidden" style="top: -1000;" value="">Tooltip</div>
+        <hr>
+        <div class="sdpi-item" id="dvReset">
+            <div class="sdpi-item-label">Clear</div>
+            <button class="sdpi-item-value" onclick="resetMultiClips()">Clear Multi Clips</button>
+        </div>
     </div>
 </body>
 </html>

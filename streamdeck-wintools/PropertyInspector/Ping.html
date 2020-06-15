@@ -6,8 +6,8 @@
     <meta name=apple-mobile-web-app-capable content=yes>
     <meta name=apple-mobile-web-app-status-bar-style content=black>
     <title>Ping Settings</title>
-    <link rel="stylesheet" href="sdpi.css">
-    <script src="sdtools.common.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
     <script src="Ping.js"></script>
 </head>
 <body>
@@ -18,7 +18,7 @@
         <div class="sdpi-item" id="dvServerName">
             <div class="sdpi-item-label">Server/IP</div>
             <input class="sdpi-item-value sdProperty" placeholder="google.com" value="" id="serverName">
-            <button class="max100 minmargin" onclick="setSettings()">Save</button>
+            <button class="max100 leftMargin0" onclick="setSettings()">Save</button>
         </div>
         <div class="sdpi-item" id="dvServerName">
             <div class="sdpi-item-label">Server Title</div>
@@ -27,6 +27,34 @@
         <div class="sdpi-item" id="dvFrequency">
             <div class="sdpi-item-label">Frequency (ms)</div>
             <input class="sdpi-item-value sdProperty" placeholder="1000" value="" id="pingFrequency" oninput="setSettings()">
+        </div>
+        <div class="sdpi-item" id="dvLatency">
+            <div class="sdpi-item-label">Normal Latency</div>
+            <input class="sdpi-item-value sdProperty" id="normalLatency" inputmode="numeric" pattern="[0-9]*" type="number" placeholder="40" oninput="setSettings()">
+        </div>
+        <div class="sdpi-item" id="dvLowLatency">
+            <div class="sdpi-item-label">Low latency image</div>
+            <div class="sdpi-item-group file" id="filepickergroup">
+                <input class="sdpi-item-value sdProperty sdFile" type="file" id="lowImage" accept=".jpg, .jpeg, .png, .ico, .gif, .bmp, .tiff" oninput="setSettings()">
+                <label class="sdpi-file-info " for="lowImage" id="lowImageFilename">No file...</label>
+                <label class="sdpi-file-label" for="lowImage">Choose file...</label>
+            </div>
+        </div>
+        <div class="sdpi-item" id="dvHighLatency">
+            <div class="sdpi-item-label">High latency image</div>
+            <div class="sdpi-item-group file" id="filepickergroup">
+                <input class="sdpi-item-value sdProperty sdFile" type="file" id="highImage" accept=".jpg, .jpeg, .png, .ico, .gif, .bmp, .tiff" oninput="setSettings()">
+                <label class="sdpi-file-info " for="highImage" id="highImageFilename">No file...</label>
+                <label class="sdpi-file-label" for="highImage">Choose file...</label>
+            </div>
+        </div>
+        <div class="sdpi-item" id="dvTimeoutImage">
+            <div class="sdpi-item-label">Timeout image</div>
+            <div class="sdpi-item-group file" id="filepickergroup">
+                <input class="sdpi-item-value sdProperty sdFile" type="file" id="timeoutImage" accept=".jpg, .jpeg, .png, .ico, .gif, .bmp, .tiff" oninput="setSettings()">
+                <label class="sdpi-file-info " for="timeoutImage" id="timeoutImageFilename">No file...</label>
+                <label class="sdpi-file-label" for="timeoutImage">Choose file...</label>
+            </div>
         </div>
     </div>
 </body>

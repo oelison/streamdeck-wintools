@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,6 +17,11 @@ using System.Threading.Tasks;
 
 namespace WinTools
 {
+
+    //---------------------------------------------------
+    //          BarRaider's Hall Of Fame
+    // Subscriber: Nurfballs
+    //---------------------------------------------------
     [PluginActionId("com.barraider.wintools.ping")]
     public class PingAction : PluginBase
     {
@@ -27,7 +33,11 @@ namespace WinTools
                 {
                     ServerName = String.Empty,
                     ServerTitle = String.Empty,
-                    PingFrequency = PING_FREQUENCY_DEFAULT_MS.ToString()
+                    PingFrequency = PING_FREQUENCY_DEFAULT_MS.ToString(),
+                    NormalLatency = NORMAL_LATENCY_DEFAULT_MS.ToString(),
+                    LowImage = String.Empty,
+                    HighImage = String.Empty,
+                    TimeoutImage = String.Empty
                 };
                 return instance;
             }
@@ -40,10 +50,26 @@ namespace WinTools
 
             [JsonProperty(PropertyName = "pingFrequency")]
             public String PingFrequency { get; set; }
+
+            [JsonProperty(PropertyName = "normalLatency")]
+            public String NormalLatency { get; set; }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "lowImage")]
+            public String LowImage { get; set; }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "highImage")]
+            public String HighImage { get; set; }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "timeoutImage")]
+            public String TimeoutImage { get; set; }
         }
 
         #region Private Members
         private const int PING_FREQUENCY_DEFAULT_MS = 1000;
+        private const int NORMAL_LATENCY_DEFAULT_MS = 40;
 
         private int pingFrequency = PING_FREQUENCY_DEFAULT_MS;
         private readonly PluginSettings settings;
@@ -53,6 +79,7 @@ namespace WinTools
         private IPAddress ipAddress = null;
         private bool isValidHost = false;
         private long pingLatency = 0;
+        private int normalLatency = NORMAL_LATENCY_DEFAULT_MS;
         private bool pingCanceled = false;
         private bool isPaused = false;
 
@@ -79,6 +106,7 @@ namespace WinTools
 
         public override void Dispose()
         {
+            tmrPingServer.Stop();
             pingSender.PingCompleted -= Ping_PingCompleted;
             tmrPingServer.Elapsed -= TmrPingServer_Elapsed;
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
@@ -111,10 +139,12 @@ namespace WinTools
                 if (pingCanceled)
                 {
                     await Connection.SetTitleAsync($"{server}\nTIMEOUT");
+                    await HandleLatencyImage(-1);
                 }
                 else
                 {
                     await Connection.SetTitleAsync($"{server}\n{pingLatency} ms");
+                    HandleLatencyImage(pingLatency);
                 }
             }
             else if (isValidHost && isPaused)
@@ -150,6 +180,11 @@ namespace WinTools
             if (String.IsNullOrEmpty(settings.PingFrequency) || !Int32.TryParse(settings.PingFrequency, out pingFrequency))
             {
                 settings.PingFrequency = PING_FREQUENCY_DEFAULT_MS.ToString();
+            }
+
+            if (String.IsNullOrEmpty(settings.NormalLatency) || !Int32.TryParse(settings.NormalLatency, out normalLatency))
+            {
+                settings.NormalLatency = NORMAL_LATENCY_DEFAULT_MS.ToString();
             }
 
             ResolveHostName();
@@ -233,8 +268,6 @@ namespace WinTools
             GeneratePing();
         }
 
-
-
         private void Ping_PingCompleted(object sender, System.Net.NetworkInformation.PingCompletedEventArgs e)
         {
             // Get Latency
@@ -256,7 +289,7 @@ namespace WinTools
                 return;
             }
 
-            if (e.Reply.Status == IPStatus.TimedOut)
+            if (e.Reply.Status == IPStatus.TimedOut || e.Reply.Status == IPStatus.DestinationHostUnreachable || e.Reply.Status == IPStatus.DestinationNetworkUnreachable)
             {
                 pingCanceled = true;
                 return;
@@ -264,6 +297,44 @@ namespace WinTools
 
             pingCanceled = false;
             pingLatency = e.Reply.RoundtripTime;
+        }
+
+        private async Task HandleLatencyImage(long currentLatency)
+        {
+            if (currentLatency < 0)
+            {
+                // Show Timeout image
+                await SetImage(settings.TimeoutImage);
+            }
+            else if (currentLatency > normalLatency)
+            {
+                // Show High Latency Image
+                await SetImage(settings.HighImage);
+            }
+            else
+            {
+                // Show Low Latency Image
+                await SetImage(settings.LowImage);
+            }
+        }
+
+        private async Task SetImage(string fileName)
+        {
+            if (String.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+            
+            if (!File.Exists(fileName))
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"Cannot set ping image - file does not exist {fileName}");
+                return;
+            }
+
+            using (Image img = Image.FromFile(fileName))
+            {
+                await Connection.SetImageAsync(img);
+            }
         }
 
         #endregion

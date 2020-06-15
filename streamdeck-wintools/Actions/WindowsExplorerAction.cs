@@ -47,13 +47,17 @@ namespace WinTools
                     PlaySoundOnSet = false,
                     PlaybackDevices = null,
                     PlaybackDevice = String.Empty,
-                    PlaySoundOnSetFile = String.Empty
+                    PlaySoundOnSetFile = String.Empty,
+                    LongKeypressTime = LONG_KEYPRESS_LENGTH_MS.ToString(),
                 };
                 return instance;
             }
 
             [JsonProperty(PropertyName = "path")]
             public String Path { get; set; }
+
+            [JsonProperty(PropertyName = "longKeypressTime")]
+            public string LongKeypressTime { get; set; }
 
             [JsonProperty(PropertyName = "playSoundOnSet")]
             public bool PlaySoundOnSet { get; set; }
@@ -70,12 +74,12 @@ namespace WinTools
         }
 
         #region Private Members
-        private const int LONG_KEYPRESS_LENGTH = 600;
+        private const int LONG_KEYPRESS_LENGTH_MS = 600;
         private const int STRING_SPLIT_SIZE = 7;
 
-        private bool keyPressed = false;
-        private DateTime keyPressStart;
         private bool longKeyPressed = false;
+        private int longKeypressTime = LONG_KEYPRESS_LENGTH_MS;
+        private readonly System.Timers.Timer tmrRunLongPress = new System.Timers.Timer();
         private string pathTitle;
 
         private readonly PluginSettings settings;
@@ -92,27 +96,32 @@ namespace WinTools
             {
                 this.settings = payload.Settings.ToObject<PluginSettings>();
             }
+            tmrRunLongPress.Interval = longKeypressTime;
+            tmrRunLongPress.Elapsed += TmrRunLongPress_Elapsed;
+
             PropagatePlaybackDevices();
             GlobalSettingsManager.Instance.RequestGlobalSettings();
             SetPathTitle();
         }
         public override void Dispose()
         {
+            tmrRunLongPress.Stop();
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
         }
 
         public override void KeyPressed(KeyPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Pressed {this.GetType()}");
-
-            keyPressed = true;
             longKeyPressed = false;
-            keyPressStart = DateTime.Now;
+
+            tmrRunLongPress.Interval = longKeypressTime > 0 ? longKeypressTime : LONG_KEYPRESS_LENGTH_MS;
+            tmrRunLongPress.Start();
         }
 
         public override void KeyReleased(KeyPayload payload)
         {
-            keyPressed = false;
+            tmrRunLongPress.Stop();
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Released {this.GetType()}");
             if (!longKeyPressed) // Take care of the short keypress
             {
                 HandleShortKeyPress();
@@ -121,15 +130,6 @@ namespace WinTools
 
         public async override void OnTick()
         {
-            if (keyPressed)
-            {
-                int timeKeyWasPressed = (int)(DateTime.Now - keyPressStart).TotalMilliseconds;
-                if (!longKeyPressed && timeKeyWasPressed >= LONG_KEYPRESS_LENGTH)
-                {
-                    await HandleLongKeyPress();
-                }
-            }
-
             // Show the folder that is stored in the path
             await Connection.SetTitleAsync(pathTitle);
         }
@@ -160,6 +160,11 @@ namespace WinTools
         }
 
         #region Private Methods
+        private void TmrRunLongPress_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            tmrRunLongPress.Stop(); // Should only run once
+            _ = HandleLongKeyPress();
+        }
 
         private Task SaveSettings()
         {
@@ -204,7 +209,7 @@ namespace WinTools
                 {
                     try
                     {
-                        filename = Path.GetFileNameWithoutExtension(ie.FullName).ToLower(); // Verify it's Windows Explorer
+                        filename = Path.GetFileNameWithoutExtension(ie.FullName).ToLowerInvariant(); // Verify it's Windows Explorer
 
                         if (filename.Equals("explorer"))
                         {
@@ -260,7 +265,7 @@ namespace WinTools
             {
                 try
                 {
-                    filename = Path.GetFileNameWithoutExtension(ie.FullName).ToLower(); // Verify it's Windows Explorer
+                    filename = Path.GetFileNameWithoutExtension(ie.FullName).ToLowerInvariant(); // Verify it's Windows Explorer
 
                     if (filename.Equals("explorer"))
                     {

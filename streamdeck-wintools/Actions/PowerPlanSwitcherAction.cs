@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -47,12 +48,15 @@ namespace WinTools
             public String PowerPlan { get; set; }
 
             [JsonProperty(PropertyName = "showActivePowerPlan")]
-            public bool ShowActivePowerPlan { get; set; }           
+            public bool ShowActivePowerPlan { get; set; }
         }
 
         #region Private Members
+        private const string ACTIVE_IMAGE_FILE = @"images\powerSelected.png";
+
         private readonly PluginSettings settings;
         private const int STRING_SPLIT_SIZE = 7;
+        private Image prefetchedActiveImage;
 
         #endregion
         public PowerPlanSwitcherAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
@@ -60,6 +64,7 @@ namespace WinTools
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
@@ -100,22 +105,31 @@ namespace WinTools
             {
                 Logger.Instance.LogMessage(TracingLevel.ERROR, $"SwitchPowerPlan Exception: {ex}");
                 await Connection.ShowAlert();
-            }  
+            }
         }
 
-        public override void KeyReleased(KeyPayload payload) 
+        public override void KeyReleased(KeyPayload payload)
         {
         }
 
         public async override void OnTick()
         {
-            if (!settings.ShowActivePowerPlan)
+            var powerPlan = PowerPlans.GetActivePowerPlan();
+            if (powerPlan == null)
             {
                 return;
             }
 
-            var powerPlan = PowerPlans.GetActivePowerPlan();
-            if (powerPlan != null)
+            if (settings.PowerPlan == powerPlan.Guid)
+            {
+                await Connection.SetImageAsync(GetActivePowerImage());
+            }
+            else
+            {
+                await Connection.SetImageAsync((string) null);
+            }
+
+            if (settings.ShowActivePowerPlan)
             {
                 await Connection.SetTitleAsync(FormatStringToKey(powerPlan.Name));
             }
@@ -160,6 +174,15 @@ namespace WinTools
                 }
             }
             return str;
+        }
+
+        private Image GetActivePowerImage()
+        {
+            if (prefetchedActiveImage == null)
+            {
+                prefetchedActiveImage = Image.FromFile(ACTIVE_IMAGE_FILE);
+            }
+            return prefetchedActiveImage;
         }
 
         #endregion

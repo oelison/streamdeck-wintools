@@ -6,8 +6,9 @@
     <meta name=apple-mobile-web-app-capable content=yes>
     <meta name=apple-mobile-web-app-status-bar-style content=black>
     <title>Latest File Copy Settings</title>
-    <link rel="stylesheet" href="sdpi.css">
-    <script src="sdtools.common.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/pickers.js"></script>
     <script src="LatestFileCopy.js"></script>
 </head>
 <body>
@@ -24,12 +25,12 @@
         <div class="sdpi-item" id="dvWatchDirectory">
             <div class="sdpi-item-label">Directory to watch</div>
             <input class="sdpi-item-value sdProperty hasFileButton" disabled value="" id="watchDirectory">
-            <button class="max100 minmargin" onclick="openDirectoryPicker('Directory to watch','watchDirectory')">...</button>
+            <button class="max100 leftMargin0" onclick="openDirectoryPicker('Directory to watch','watchDirectory')">...</button>
         </div>
         <div class="sdpi-item" id="dvSaveFileName">
             <div class="sdpi-item-label">Save File Name</div>
             <input class="sdpi-item-value sdProperty hasFileButton" disabled value="" id="copyPath">
-            <button class="max100 minmargin" onclick="openSaveFilePicker('Copy to this file name','All files (*.*)|*.*','copyPath')">...</button>
+            <button class="max100 leftMargin0" onclick="openSaveFilePicker('Copy to this file name','All files (*.*)|*.*','copyPath')">...</button>
         </div>
     </div>
 </body>

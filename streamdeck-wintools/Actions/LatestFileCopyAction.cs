@@ -186,7 +186,7 @@ namespace WinTools
 
             if (payload["property_inspector"] != null)
             {
-                switch (payload["property_inspector"].ToString().ToLower())
+                switch (payload["property_inspector"].ToString().ToLowerInvariant())
                 {
                     case "loadfolderpicker":
                         string folderPropertyName = (string)payload["property_name"];

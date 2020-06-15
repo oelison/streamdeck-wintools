@@ -1,6 +1,74 @@
 {
   "Actions": [
     {
+      "Icon": "Images/noicon",
+      "Name": "Display Action",
+      "States": [
+        {
+          "Image": "Images/noicon",
+          "TitleAlignment": "middle",
+          "FontSize": "13",
+          "TitleColor": "White"
+
+        }
+      ],
+      "VisibleInActionsList": false,
+      "SupportedInMultiActions": false,
+      "Tooltip": "Display Action",
+      "UUID": "com.barraider.wintools.displayaction"
+    },
+    {
+      "Icon": "Images/mixerIcon",
+      "Name": "App Audio Mixer",
+      "States": [
+        {
+          "Image": "Images/mixerAction",
+          "TitleAlignment": "middle",
+          "FontSize": "18",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Modify volume levels for a specific application",
+      "UUID": "com.barraider.wintools.appaudiomixer",
+      "PropertyInspectorPath": "PropertyInspector/AppAudioMixer.html"
+    },
+    {
+      "Icon": "Images/soundIcon",
+      "Name": "App Volume Adjust",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "middle",
+          "FontSize": "18",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Modify volume levels for a specific application",
+      "UUID": "com.barraider.wintools.appvolumeadjust",
+      "PropertyInspectorPath": "PropertyInspector/AppVolumeAdjuster.html"
+    },
+    {
+      "Icon": "Images/soundIcon",
+      "Name": "App Volume Set",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "middle",
+          "FontSize": "18",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Set the volume on an application to a specific level",
+      "UUID": "com.barraider.wintools.appvolumeset",
+      "PropertyInspectorPath": "PropertyInspector/AppVolumeSet.html"
+    },
+    {
       "Icon": "Images/copyIcon",
       "Name": "Latest File Copy",
       "States": [
@@ -16,6 +84,20 @@
       "PropertyInspectorPath": "PropertyInspector/LatestFileCopy.html"
     },
     {
+      "Icon": "Images/lockIcon",
+      "Name": "Lock Computer",
+      "States": [
+        {
+          "Image": "Images/lockAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Locks your computer",
+      "UUID": "com.barraider.wintools.lock"
+    },
+    {
       "Icon": "Images/mouseIcon",
       "Name": "Mouse Location",
       "States": [
@@ -29,6 +111,21 @@
       "Tooltip": "Shows you the current mouse location on a key, and lets you copy the position",
       "UUID": "com.barraider.wintools.mouselocation",
       "PropertyInspectorPath": "PropertyInspector/MouseLocation.html"
+    },
+    {
+      "Icon": "Images/multiClipIcon",
+      "Name": "Multi Clip",
+      "States": [
+        {
+          "Image": "Images/multiClipAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Each Multi Clip key is it's own dedicated clipboard",
+      "UUID": "com.barraider.wintools.multiclip",
+      "PropertyInspectorPath": "PropertyInspector/MultiClip.html"
     },
     {
       "Icon": "Images/cloudIcon",
@@ -91,6 +188,21 @@
       "PropertyInspectorPath": "PropertyInspector/WindowsService.html"
     },
     {
+      "Icon": "Images/uptimeIcon",
+      "Name": "Uptime Counter",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "11"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Shows the system uptime of your PC",
+      "UUID": "com.barraider.wintools.uptime",
+      "PropertyInspectorPath": "PropertyInspector/Uptime.html"
+    },
+    {
       "Icon": "Images/folderIcon",
       "Name": "Windows Explorer Scratch Pad",
       "States": [
@@ -107,11 +219,11 @@
     }
   ],
   "Author": "BarRaider",
-  "Description": "Advanced set of useful plugins for controlling Windows",
+  "Description": "Advanced set of useful plugins for controlling Windows. Use the 'Explorer Scratch Pad' to quickly cycle between common folders, 'Multi-Clip' turns every key to an individual clipboard, Ping servers and see latency, change power plans, Stop/Start/Restart Windows services and more...\n*** NEW *** Control the volume of your Windows apps from the Stream Deck!",
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",
-  "Version": "1.0",
+  "Version": "1.1",
   "CodePath": "com.barraider.wintools",
   "Category": "Win Tools [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
@@ -121,8 +233,22 @@
       "MinimumVersion": "10"
     }
   ],
+  "Profiles": [
+    {
+      "Name": "WinTools",
+      "ReadOnly": true,
+      "DeviceType": 0,
+      "DontAutoSwitchWhenInstalled": true
+    },
+    {
+      "Name": "WinToolsXL",
+      "ReadOnly": true,
+      "DeviceType": 2,
+      "DontAutoSwitchWhenInstalled": true
+    }
+  ],
   "SDKVersion": 2,
   "Software": {
-    "MinimumVersion": "4.5"
+    "MinimumVersion": "4.7"
   }
 }

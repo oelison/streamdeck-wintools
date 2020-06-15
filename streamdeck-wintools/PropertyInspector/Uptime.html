@@ -5,23 +5,22 @@
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
     <meta name=apple-mobile-web-app-capable content=yes>
     <meta name=apple-mobile-web-app-status-bar-style content=black>
-    <title>Mouse Location Settings</title>
+    <title>Uptime Counter Settings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
-    <script src="MouseLocation.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/pickers.js"></script>
 </head>
 <body>
     <div class="sdpi-wrapper">
         <details class="message">
             <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
         </details>
-        <div class="sdpi-item" id="select_single" style="display:none;">
-            <div class="sdpi-item-label">Coordinates Type</div>
-            <select class="sdpi-item-value select sdProperty" id="coordinatesType" oninput="setSettings()" value="0">
-                <option value="0">SuperMacro Compatible</option>
-                <option value="1">Windows Secondary</option>
-            </select>
+        <div class="sdpi-item" id="dvSaveFileName">
+            <div class="sdpi-item-label">Save To File</div>
+            <input class="sdpi-item-value sdProperty hasFileButton" disabled value="" id="saveFilePath">
+            <button class="max100 leftMargin0" onclick="openSaveFilePicker('Save uptime to file','Text files (*.txt)|*.txt|All files (*.*)|*.*','saveFilePath')">...</button>
         </div>
     </div>
+
 </body>
 </html>

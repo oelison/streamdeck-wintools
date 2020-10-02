@@ -16,6 +16,7 @@ namespace WinTools.Backend
     //---------------------------------------------------
     //          BarRaider's Hall Of Fame
     // Subscriber: nubby_ninja
+    // Subscriber: OneMouseGaming
     //---------------------------------------------------
     internal static class AppVolume
     {
@@ -92,11 +93,49 @@ namespace WinTools.Backend
             });
         }
 
-        internal static Task<bool> SetAppVolume(string applicationName, int volumeStep)
+        internal static Task<bool> SetAppVolume(string applicationName, int volumeTarget, int fadeLength)
         {
-            return Task.Run(() =>
+            const int FADE_STEP_LENGTH_MS = 160;
+            return Task.Run<bool>(async () =>
             {
-                return ModifyAppVolume(applicationName, ModifyVolumeType.SetVolume, volumeStep);
+                if (fadeLength <= 0)
+                {
+                    return ModifyAppVolume(applicationName, ModifyVolumeType.SetVolume, volumeTarget);
+                }
+                else
+                {
+                    // Get current volume
+                    var appInfo = (await GetVolumeApplicationsStatus()).Where(app => app.Name == applicationName).FirstOrDefault();
+                    if (appInfo == null)
+                    {
+                        Logger.Instance.LogMessage(TracingLevel.ERROR, $"SetAppVolume could not find a valid app {applicationName} for fade");
+                        return ModifyAppVolume(applicationName, ModifyVolumeType.SetVolume, volumeTarget);
+                    }
+
+                    // appInfo volume is 0-1 float
+                    int startingVolume = (int)(appInfo.Volume * 100);
+                    int totalSteps = fadeLength / FADE_STEP_LENGTH_MS;
+                    float volumeIncrement = (volumeTarget - startingVolume) / (float)totalSteps;
+                    float currentVolume = startingVolume;
+
+                    Stopwatch st = new Stopwatch();
+                    st.Start();
+                    for (int currentStep = 0; currentStep < totalSteps; currentStep++)
+                    {
+                        currentVolume += volumeIncrement;
+                        ModifyAppVolume(applicationName, ModifyVolumeType.SetVolume, (int)currentVolume);
+
+                        int currentExpectedLength = currentStep * FADE_STEP_LENGTH_MS;
+                        int currentActualLength = (int)st.ElapsedMilliseconds;
+                        if (currentExpectedLength > currentActualLength)
+                        {
+                            await Task.Delay(currentExpectedLength - currentActualLength);
+                        }
+                    }
+                    Logger.Instance.LogMessage(TracingLevel.INFO, $"Fade took {st.ElapsedMilliseconds} ms, expected {fadeLength} ms");
+                    st.Stop();
+                    return true;
+                }        
             });
         }
 
@@ -150,6 +189,7 @@ namespace WinTools.Backend
         private static bool ModifyAppVolume(string applicationName, ModifyVolumeType modifyType, int modifyLevel)
         {
             bool foundApplication = false;
+            
             try
             {
                 var volumeObjects = GetAllVolumeObjects();
@@ -212,12 +252,11 @@ namespace WinTools.Backend
 
                 // Cleanup Volume Objects
                 DisposeVolumeObjects(volumeObjects);
-
                 return foundApplication;
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, $"AdjustAppVolume exception for {applicationName}: {ex}");
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"ModifyAppVolume exception for {applicationName}: {ex}");
                 return false;
             }
         }

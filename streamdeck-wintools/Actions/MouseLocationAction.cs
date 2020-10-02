@@ -55,14 +55,17 @@ namespace WinTools
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
                 this.settings = payload.Settings.ToObject<PluginSettings>();
             }
 
-            tmrShowMouseLocation = new System.Timers.Timer();
-            tmrShowMouseLocation.Interval = 250;
+            tmrShowMouseLocation = new System.Timers.Timer
+            {
+                Interval = 250
+            };
             tmrShowMouseLocation.Elapsed += TmrShowMouseLocation_Elapsed;
         }
 

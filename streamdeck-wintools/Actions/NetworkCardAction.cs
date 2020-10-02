@@ -53,6 +53,7 @@ namespace WinTools
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
@@ -89,7 +90,7 @@ namespace WinTools
             }
 
             string name = string.IsNullOrEmpty(settings.NetworkCardTitle) ? nic.Name : settings.NetworkCardTitle;
-            await Connection.SetTitleAsync($"{name}\n{nic.OperationalStatus.ToString()}");
+            await Connection.SetTitleAsync($"{name}\n{nic.OperationalStatus}");
         }
 
         public override void ReceivedSettings(ReceivedSettingsPayload payload)

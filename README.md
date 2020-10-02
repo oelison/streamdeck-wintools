@@ -1,6 +1,17 @@
 # Win Tools
 Advanced set of useful plugins for controlling Windows from the Stream Deck
 
+## New in v1.2
+- ***Stream Deck Mobile Support!***
+- :new: **Volume Fade** - `App Volume Set` action now supports Fade In/Fade Out :PogChamp: 
+- **New Action** `Drive Info` shows you stats on your Hard Drives and warns you when space is getting low
+- **New Action** `Primary Monitor` allows you to set your Primary Monitor from the Stream Deck
+- `App Volume Mixer` and `App Volume Adjust` support finer grain volume adjustments
+- `Explorer Scratch Pad` now has a `Lock` setting to prevent actual modification of the directory
+- `Explorer Scratch Pad` now has supports Short Clicking to copy the directory location to clipboard INSTEAD of opening an Explorer window
+- `Multi-Clip` now supports reusing the same clipboard across multiple Stream Deck profiles (using the `Shared Id` setting)
+- Multi-Action support for `App Volume Set` / `App Volume Adjust` / `Primary Monitor`
+
 ## New in v1.1
 - **New Action** `App Audio Mixer` - Control the volume of all your Windows apps straight from the Stream Deck!!!
     - Mixer mode shows you all relevant apps and you can quickly +/- the volume for each or click the app icon to mute it. Full Screen support for both Classic and XL

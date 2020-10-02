@@ -59,7 +59,7 @@ namespace WinTools.Actions
         #region Private Members
         private const int DEFAULT_VOLUME_STEP = 15;
 
-        private PluginSettings settings;
+        private readonly PluginSettings settings;
         private int volumeStep = DEFAULT_VOLUME_STEP;
 
         #endregion
@@ -68,6 +68,7 @@ namespace WinTools.Actions
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {

@@ -50,7 +50,7 @@ namespace WinTools.Actions
         #region Private Members
         private const int DEFAULT_VOLUME_STEP = 15;
 
-        private PluginSettings settings;
+        private readonly PluginSettings settings;
         private int volumeStep = DEFAULT_VOLUME_STEP;
 
         #endregion
@@ -59,6 +59,7 @@ namespace WinTools.Actions
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
@@ -77,13 +78,26 @@ namespace WinTools.Actions
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"{GetType()} Key Pressed");
 
-            if (Connection.DeviceInfo().Type == StreamDeckDeviceType.StreamDeckClassic)
+            string profileName = String.Empty;
+            switch (Connection.DeviceInfo().Type)
             {
-                await Connection.SwitchProfileAsync("WinTools");
+                case StreamDeckDeviceType.StreamDeckClassic:
+                    profileName = "WinTools";
+                    break;
+                case StreamDeckDeviceType.StreamDeckXL:
+                    profileName = "WinToolsXL";
+                    break;
+                case StreamDeckDeviceType.StreamDeckMobile:
+                    profileName = "WinToolsMobile";
+                    break;
+                default:
+                    Logger.Instance.LogMessage(TracingLevel.WARN, $"SwitchToFullScreen: Unsupported device type: {Connection.DeviceInfo().Type}");
+                    break;
             }
-            else
+
+            if (!String.IsNullOrEmpty(profileName))
             {
-                await Connection.SwitchProfileAsync("WinToolsXL");
+                await Connection.SwitchProfileAsync(profileName);
             }
 
             await AudioMixerManager.Instance.ShowMixer(Connection, new MixerSettings(volumeStep, settings.ShowAppName, settings.ShowVolume));
@@ -97,7 +111,6 @@ namespace WinTools.Actions
 
         public override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
-            bool showTitle = settings.ShowVolume || settings.ShowAppName;
             Tools.AutoPopulateSettings(settings, payload.Settings);
             InitializeSettings();
         }

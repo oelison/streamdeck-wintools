@@ -49,6 +49,7 @@ namespace WinTools
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
@@ -84,7 +85,7 @@ namespace WinTools
         {
             if (!String.IsNullOrEmpty(lastChangeFileName) && lastChangedTime > DateTime.MinValue)
             {
-                await Connection.SetTitleAsync($"{lastChangeFileName}\n{lastChangedTime.ToString("HH:mm:ss")}");
+                await Connection.SetTitleAsync($"{lastChangeFileName}\n{lastChangedTime:HH:mm:ss}");
             }
         }
 

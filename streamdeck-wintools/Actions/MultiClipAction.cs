@@ -1,4 +1,5 @@
 ﻿using BarRaider.SdTools;
+using BarRaider.SdTools.Wrappers;
 using NAudio.Wave;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -45,7 +46,8 @@ namespace WinTools
                     PlaySoundOnSet = false,
                     PlaybackDevices = null,
                     PlaybackDevice = String.Empty,
-                    PlaySoundOnSetFile = String.Empty
+                    PlaySoundOnSetFile = String.Empty,
+                    SharedId = String.Empty
                 };
                 return instance;
             }
@@ -66,19 +68,21 @@ namespace WinTools
             [JsonProperty(PropertyName = "playSoundOnSetFile")]
             public string PlaySoundOnSetFile { get; set; }
 
-
+            [JsonProperty(PropertyName = "sharedId")]
+            public string SharedId { get; set; }
         }
 
         #region Private Members
         private const int LONG_KEYPRESS_LENGTH_MS = 600;
-        private const int STRING_SPLIT_SIZE = 7;
 
         private readonly PluginSettings settings;
+        private TitleParameters titleParameters;
         private bool longKeyPressed = false;
         private int longKeypressTime = LONG_KEYPRESS_LENGTH_MS;
         private readonly System.Timers.Timer tmrRunLongPress = new System.Timers.Timer();
         private readonly InputSimulator iis = new InputSimulator();
         private string previousText = String.Empty;
+        private string clipboardId = String.Empty;
 
 
         #endregion
@@ -87,12 +91,14 @@ namespace WinTools
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
                 this.settings = payload.Settings.ToObject<PluginSettings>();
             }
             Connection.OnSendToPlugin += Connection_OnSendToPlugin;
+            Connection.OnTitleParametersDidChange += Connection_OnTitleParametersDidChange;
             tmrRunLongPress.Interval = longKeypressTime;
             tmrRunLongPress.Elapsed += TmrRunLongPress_Elapsed;
             InitializeSettings();
@@ -100,9 +106,10 @@ namespace WinTools
 
         public override void Dispose()
         {
-            Connection.OnSendToPlugin -= Connection_OnSendToPlugin;
             tmrRunLongPress.Stop();
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");         
+            Connection.OnSendToPlugin -= Connection_OnSendToPlugin;
+            Connection.OnTitleParametersDidChange -= Connection_OnTitleParametersDidChange;
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
         }
 
         public override void KeyPressed(KeyPayload payload)
@@ -127,9 +134,9 @@ namespace WinTools
         public async override void OnTick()
         {
             string currentValue = String.Empty;
-            if (!String.IsNullOrEmpty(CacheManager.Instance.GetValue(Connection.ContextId)))
+            if (!String.IsNullOrEmpty(CacheManager.Instance.GetValue(clipboardId)))
             {
-                currentValue = SplitLongWord(CacheManager.Instance.GetValue(Connection.ContextId));
+                currentValue = Tools.SplitStringToFit(CacheManager.Instance.GetValue(clipboardId), titleParameters);
             }
 
             if (currentValue != previousText)
@@ -155,16 +162,16 @@ namespace WinTools
             return Connection.SetSettingsAsync(JObject.FromObject(settings));
         }
 
-        private void TmrRunLongPress_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private async void TmrRunLongPress_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             tmrRunLongPress.Stop(); // Should only run once
-            HandleLongKeyPress();
+            await HandleLongKeyPress();
         }
 
         private void HandleShortKeyPress()
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Short Keypress");
-            string clipboardEntry = CacheManager.Instance.GetValue(Connection.ContextId);
+            string clipboardEntry = CacheManager.Instance.GetValue(clipboardId);
             if (!String.IsNullOrEmpty(clipboardEntry)) // Short Key Press
             {
                 SetClipboard(clipboardEntry);
@@ -172,13 +179,13 @@ namespace WinTools
             }
         }
 
-        private void HandleLongKeyPress()
+        private async Task  HandleLongKeyPress()
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Long Keypress");
             longKeyPressed = true;
             iis.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.VK_C); // Send a Ctrl-C to copy selection into the clipboard
             ReadFromClipboard(); // Fetch it from the clipboard and store it internally
-            PlaySoundOnSet();
+            await PlaySoundOnSet();
         }
 
         private void InitializeSettings()
@@ -188,26 +195,14 @@ namespace WinTools
                 settings.LongKeypressTime = LONG_KEYPRESS_LENGTH_MS.ToString();
                 SaveSettings();
             }
+
+            clipboardId = Connection.ContextId;
+            if (!String.IsNullOrEmpty(settings.SharedId))
+            {
+                clipboardId = settings.SharedId;
+            }
+
             PropagatePlaybackDevices();
-        }
-
-        private string SplitLongWord(string word)
-        {
-            if (String.IsNullOrEmpty(word))
-            {
-                return word;
-            }
-
-            // Split up to 4 lines
-            for (int idx = 0; idx < 3; idx++)
-            {
-                int cutSize = STRING_SPLIT_SIZE * (idx + 1);
-                if (word.Length > cutSize)
-                {
-                    word = $"{word.Substring(0, cutSize)}\n{word.Substring(cutSize)}";
-                }
-            }
-            return word;
         }
 
         #region Clipboard
@@ -219,7 +214,7 @@ namespace WinTools
                 {
                     try
                     {
-                        CacheManager.Instance.SetValue(Connection.ContextId, Clipboard.GetText(System.Windows.Forms.TextDataFormat.Text));
+                        CacheManager.Instance.SetValue(clipboardId, Clipboard.GetText(System.Windows.Forms.TextDataFormat.Text));
                     }
 
                     catch (Exception ex)
@@ -244,7 +239,7 @@ namespace WinTools
 
                     catch (Exception ex)
                     {
-                        Logger.Instance.LogMessage(TracingLevel.ERROR, $"ReadFromClipboard exception: {ex}");
+                        Logger.Instance.LogMessage(TracingLevel.ERROR, $"SetClipboard exception: {ex}");
                     }
                 });
             staThread.SetApartmentState(ApartmentState.STA);
@@ -264,13 +259,7 @@ namespace WinTools
             {
                 if (settings.PlaySoundOnSet)
                 {
-                    for (int idx = -1; idx < WaveOut.DeviceCount; idx++)
-                    {
-                        var currDevice = WaveOut.GetCapabilities(idx);
-                        settings.PlaybackDevices.Add(new PlaybackDevice() { ProductName = currDevice.ProductName });
-                    }
-
-                    settings.PlaybackDevices = settings.PlaybackDevices.OrderBy(p => p.ProductName).ToList();
+                    settings.PlaybackDevices = AudioUtils.Common.GetAllPlaybackDevices(true).Select(d => new PlaybackDevice() { ProductName = d }).ToList();
                     SaveSettings();
                 }
             }
@@ -280,59 +269,28 @@ namespace WinTools
             }
         }
 
-        private void PlaySoundOnSet()
+        private async Task PlaySoundOnSet()
         {
-            Task.Run(() =>
+            if (!settings.PlaySoundOnSet)
             {
-                if (!settings.PlaySoundOnSet)
-                {
-                    return;
-                }
-
-                if (String.IsNullOrEmpty(settings.PlaySoundOnSetFile) || string.IsNullOrEmpty(settings.PlaybackDevice))
-                {
-                    Logger.Instance.LogMessage(TracingLevel.WARN, $"PlaySoundOnSet called but File or Playback device are empty. File: {settings.PlaySoundOnSetFile} Device: {settings.PlaybackDevice}");
-                    return;
-                }
-
-                if (!File.Exists(settings.PlaySoundOnSetFile))
-                {
-                    Logger.Instance.LogMessage(TracingLevel.WARN, $"PlaySoundOnSet called but file does not exist: {settings.PlaySoundOnSetFile}");
-                    return;
-                }
-
-                Logger.Instance.LogMessage(TracingLevel.INFO, $"PlaySoundOnEnd called. Playing {settings.PlaySoundOnSetFile} on device: {settings.PlaybackDevice}");
-                var deviceNumber = GetPlaybackDeviceFromDeviceName(settings.PlaybackDevice);
-                using (var audioFile = new AudioFileReader(settings.PlaySoundOnSetFile))
-                {
-                    using (var outputDevice = new WaveOutEvent())
-                    {
-                        outputDevice.DeviceNumber = deviceNumber;
-                        outputDevice.Init(audioFile);
-                        outputDevice.Play();
-                        while (outputDevice.PlaybackState == PlaybackState.Playing)
-                        {
-                            System.Threading.Thread.Sleep(1000);
-                        }
-                        outputDevice.Stop();
-                    }
-                }
-            });
-        }
-
-        private int GetPlaybackDeviceFromDeviceName(string deviceName)
-        {
-            for (int idx = -1; idx < WaveOut.DeviceCount; idx++)
-            {
-                var currDevice = WaveOut.GetCapabilities(idx);
-                if (deviceName == currDevice.ProductName)
-                {
-                    return idx;
-                }
+                return;
             }
-            return -1;
-        }
 
+            if (String.IsNullOrEmpty(settings.PlaySoundOnSetFile) || string.IsNullOrEmpty(settings.PlaybackDevice))
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"PlaySoundOnSet called but File or Playback device are empty. File: {settings.PlaySoundOnSetFile} Device: {settings.PlaybackDevice}");
+                return;
+            }
+
+            if (!File.Exists(settings.PlaySoundOnSetFile))
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"PlaySoundOnSet called but file does not exist: {settings.PlaySoundOnSetFile}");
+                return;
+            }
+
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"PlaySoundOnEnd called. Playing {settings.PlaySoundOnSetFile} on device: {settings.PlaybackDevice}");
+            await AudioUtils.Common.PlaySound(settings.PlaySoundOnSetFile, settings.PlaybackDevice);
+        }
 
         #endregion
 
@@ -352,6 +310,10 @@ namespace WinTools
             }
         }
 
+        private void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
+        {
+            titleParameters = e.Event?.Payload?.TitleParameters;
+        }
 
         #endregion
     }

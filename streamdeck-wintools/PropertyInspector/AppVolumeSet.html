@@ -33,6 +33,24 @@
                 <label for="volume" class="rangeLabel"></label>
             </div>
         </div>
+        <div type="checkbox" class="sdpi-item" id="dvShowVolume">
+            <div class="sdpi-item-label">Fade</div>
+            <div class="sdpi-item-value">
+                <input id="fadeVolume" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
+                <label for="fadeVolume" class="sdpi-item-label"><span></span>Fade to the above volume</label>
+            </div>
+        </div>
+        <div id="dvFadeSettings" style="display:none">
+            <div type="range" class="sdpi-item sdShowTooltip" id="dvFadeLength">
+                <div class="sdpi-item-label" id="volumeLabel">Fade Length</div>
+                <div class="sdpi-item-value">
+                    <span class="clickable" value="200">200</span>
+                    <input type="range" min="200" max="10000" value=1000 list="numbers" data-suffix=" ms" class="sdProperty" id="fadeLength" oninput="setSettings()">
+                    <span class="clickable" value="10000">10000</span>
+                    <label for="fadeLength" class="rangeLabel"></label>
+                </div>
+            </div>
+        </div>
         <div class="sdpi-info-label hidden" style="top: -1000;" value="">Tooltip</div>
         <div type="checkbox" class="sdpi-item" id="dvShowVolume">
             <div class="sdpi-item-label">Show Volume</div>

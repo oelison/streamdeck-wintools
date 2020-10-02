@@ -37,12 +37,11 @@ namespace WinTools.Actions
         private const int ICON_SIZE_PIXELS = 64;
         private const string MUTE_ICON_PATH = @"images\muteIcon.png";
 
-        private int deviceColumns = 0;
-        private int locationRow = 0;
-        private int locationColumn = 0;
-        private int sequentialKey;
+        private readonly int deviceColumns = 0;
+        private readonly int locationRow = 0;
+        private readonly int locationColumn = 0;
+        private readonly int sequentialKey;
         private readonly KeyCoordinates coordinates;
-        private readonly StreamDeckDeviceType deviceType;
         private readonly SemaphoreSlim actionLock = new SemaphoreSlim(1, 1);
         private static readonly SemaphoreSlim imageCloneLock = new SemaphoreSlim(1, 1);
 
@@ -67,8 +66,6 @@ namespace WinTools.Actions
             {
                 Logger.Instance.LogMessage(TracingLevel.ERROR, $"DisplayAction invalid ctor settings Device: {deviceInfo} Payload: {payload}");
             }
-            deviceType = Connection.DeviceInfo().Type;
-
             UIManager.Instance.UIActionEvent += Instance_UIActionEvent;
             Logger.Instance.LogMessage(TracingLevel.DEBUG, $"[{Thread.CurrentThread.ManagedThreadId}] DisplayAction up: {sequentialKey}");
         }
@@ -85,23 +82,13 @@ namespace WinTools.Actions
             UIManager.Instance.NotifyKeyPressed(coordinates, false);
         }
 
-        public override void KeyReleased(KeyPayload payload)
-        {
+        public override void KeyReleased(KeyPayload payload) { }
 
-        }
+        public override void OnTick() { }
 
-        public async override void OnTick()
-        {
-        }
+        public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }
 
-        public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload)
-        {
-        }
-
-        public override void ReceivedSettings(ReceivedSettingsPayload payload)
-        {
-
-        }
+        public override void ReceivedSettings(ReceivedSettingsPayload payload) { }
 
         #endregion
 
@@ -163,7 +150,10 @@ namespace WinTools.Actions
         private async Task DrawImage(UIActionSettings actionRequest)
         {
             //Logger.Instance.LogMessage(TracingLevel.INFO, $"Row {coordinates.Row} Column {coordinates.Column} Color {(actionRequest.BackgroundColor.HasValue ? actionRequest.BackgroundColor.Value.ToString() : "")} Title {actionRequest.Title ?? ""}");
-            await Connection.SetImageAsync(await CreateImage(actionRequest));
+            using (var img = await CreateImage(actionRequest))
+            {
+                await Connection.SetImageAsync(img);
+            }
         }
 
         private async Task<Bitmap> CreateImage(UIActionSettings actionRequest)
@@ -196,7 +186,7 @@ namespace WinTools.Actions
             // If a FontAwesome image is requested, draw it in the center
             if (actionRequest.FontAwesomeIcon.HasValue)
             {
-                Image icon = null;
+                Image icon;
                 // Special handling for Mute Icon
                 if (actionRequest.FontAwesomeIcon == IconChar.VolumeMute)
                 {
@@ -218,17 +208,19 @@ namespace WinTools.Actions
             // Draw text title if needed
             if (!String.IsNullOrEmpty(actionRequest.Title))
             {
-                var font = new Font("Verdana", 24, FontStyle.Bold, GraphicsUnit.Pixel);
-                var fgBrush = Brushes.White;
-                string[] titleLines = actionRequest.Title.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Reverse().ToArray();
-
-                SizeF stringSize = graphics.MeasureString(titleLines[0], font);
-                float stringHeight = Math.Abs((height - stringSize.Height - 3));
-                foreach (string line in titleLines)
+                using (var font = new Font("Verdana", 24, FontStyle.Bold, GraphicsUnit.Pixel))
                 {
-                    float textCenter = graphics.GetTextCenter(line, img.Width, font);
-                    float newPosition = graphics.DrawAndMeasureString(line, font, fgBrush, new PointF(textCenter, stringHeight));
-                    stringHeight -= (newPosition - stringHeight);
+                    var fgBrush = Brushes.White;
+                    string[] titleLines = actionRequest.Title.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Reverse().ToArray();
+
+                    SizeF stringSize = graphics.MeasureString(titleLines[0], font);
+                    float stringHeight = Math.Abs((height - stringSize.Height - 3));
+                    foreach (string line in titleLines)
+                    {
+                        float textCenter = graphics.GetTextCenter(line, img.Width, font, out _);
+                        float newPosition = graphics.DrawAndMeasureString(line, font, fgBrush, new PointF(textCenter, stringHeight));
+                        stringHeight -= (newPosition - stringHeight);
+                    }
                 }
             }
 

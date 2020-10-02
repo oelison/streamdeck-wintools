@@ -89,6 +89,7 @@ namespace WinTools
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
@@ -144,7 +145,7 @@ namespace WinTools
                 else
                 {
                     await Connection.SetTitleAsync($"{server}\n{pingLatency} ms");
-                    HandleLatencyImage(pingLatency);
+                    await HandleLatencyImage(pingLatency);
                 }
             }
             else if (isValidHost && isPaused)

@@ -46,7 +46,7 @@
 
         }
       ],
-      "SupportedInMultiActions": false,
+      "SupportedInMultiActions": true,
       "Tooltip": "Modify volume levels for a specific application",
       "UUID": "com.barraider.wintools.appvolumeadjust",
       "PropertyInspectorPath": "PropertyInspector/AppVolumeAdjuster.html"
@@ -63,10 +63,25 @@
 
         }
       ],
-      "SupportedInMultiActions": false,
-      "Tooltip": "Set the volume on an application to a specific level",
+      "SupportedInMultiActions": true,
+      "Tooltip": "Set (or fade) the volume of an application to a specific level",
       "UUID": "com.barraider.wintools.appvolumeset",
       "PropertyInspectorPath": "PropertyInspector/AppVolumeSet.html"
+    },
+    {
+      "Icon": "Images/driveIcon",
+      "Name": "Drive Info",
+      "States": [
+        {
+          "Image": "Images/driveAction",
+          "TitleAlignment": "middle",
+          "FontSize": "10"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows information about your disk drives",
+      "UUID": "com.barraider.wintools.driveinfo",
+      "PropertyInspectorPath": "PropertyInspector/DriveInfo.html"
     },
     {
       "Icon": "Images/copyIcon",
@@ -173,6 +188,21 @@
       "PropertyInspectorPath": "PropertyInspector/Ping.html"
     },
     {
+      "Icon": "Images/monitorIcon",
+      "Name": "Primary Monitor",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Sets the primary monitor",
+      "UUID": "com.barraider.wintools.primarymonitor",
+      "PropertyInspectorPath": "PropertyInspector/PrimaryMonitor.html"
+    },
+    {
       "Icon": "Images/gearsIcon",
       "Name": "Service Start/Stop",
       "States": [
@@ -223,7 +253,7 @@
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",
-  "Version": "1.1",
+  "Version": "1.2",
   "CodePath": "com.barraider.wintools",
   "Category": "Win Tools [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
@@ -245,10 +275,16 @@
       "ReadOnly": true,
       "DeviceType": 2,
       "DontAutoSwitchWhenInstalled": true
+    },
+    {
+      "Name": "WinToolsMobile",
+      "ReadOnly": true,
+      "DeviceType": 3,
+      "DontAutoSwitchWhenInstalled": true
     }
   ],
   "SDKVersion": 2,
   "Software": {
-    "MinimumVersion": "4.7"
+    "MinimumVersion": "4.8"
   }
 }

@@ -1,4 +1,5 @@
 ﻿using BarRaider.SdTools;
+using BarRaider.SdTools.Wrappers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -55,7 +56,7 @@ namespace WinTools
         private const string ACTIVE_IMAGE_FILE = @"images\powerSelected.png";
 
         private readonly PluginSettings settings;
-        private const int STRING_SPLIT_SIZE = 7;
+        private TitleParameters titleParameters;
         private Image prefetchedActiveImage;
 
         #endregion
@@ -70,11 +71,13 @@ namespace WinTools
             {
                 this.settings = payload.Settings.ToObject<PluginSettings>();
             }
+            Connection.OnTitleParametersDidChange += Connection_OnTitleParametersDidChange;
             InitializeSettings();
         }
 
         public override void Dispose()
         {
+            Connection.OnTitleParametersDidChange -= Connection_OnTitleParametersDidChange;
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
         }
 
@@ -131,7 +134,7 @@ namespace WinTools
 
             if (settings.ShowActivePowerPlan)
             {
-                await Connection.SetTitleAsync(FormatStringToKey(powerPlan.Name));
+                await Connection.SetTitleAsync(Tools.SplitStringToFit(powerPlan.Name, titleParameters));
             }
         }
 
@@ -162,20 +165,6 @@ namespace WinTools
             settings.PowerPlans = PowerPlans.GetAll().ToList();
         }
 
-        private string FormatStringToKey(string str)
-        {
-            // Split to 3 lines
-            for (int idx = 1; idx <= 2; idx++)
-            {
-                int cutSize = STRING_SPLIT_SIZE * idx;
-                if (str.Length > cutSize)
-                {
-                    str = $"{str.Substring(0, cutSize)}\n{str.Substring(cutSize)}";
-                }
-            }
-            return str;
-        }
-
         private Image GetActivePowerImage()
         {
             if (prefetchedActiveImage == null)
@@ -183,6 +172,11 @@ namespace WinTools
                 prefetchedActiveImage = Image.FromFile(ACTIVE_IMAGE_FILE);
             }
             return prefetchedActiveImage;
+        }
+
+        private void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
+        {
+            titleParameters = e.Event?.Payload?.TitleParameters;
         }
 
         #endregion

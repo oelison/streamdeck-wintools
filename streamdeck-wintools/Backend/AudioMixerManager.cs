@@ -78,8 +78,10 @@ namespace WinTools.Backend
         {
             try
             {
-                tmrRefreshVolume = new System.Timers.Timer();
-                tmrRefreshVolume.Interval = 3000;
+                tmrRefreshVolume = new System.Timers.Timer
+                {
+                    Interval = 3000
+                };
                 tmrRefreshVolume.Elapsed += TmrRefreshVolume_Elapsed;
 
                 // Prefetch images
@@ -154,6 +156,7 @@ namespace WinTools.Backend
 
         public void ProcessLongKeyPressed(KeyCoordinates coordinates)
         {
+            ProcessKeyPressed(coordinates);
         }
 
         public async void ProcessKeyPressed(KeyCoordinates coordinates)

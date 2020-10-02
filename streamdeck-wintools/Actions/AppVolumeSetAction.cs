@@ -13,6 +13,11 @@ using WinTools.Wrappers;
 
 namespace WinTools.Actions
 {
+    //---------------------------------------------------
+    //          BarRaider's Hall Of Fame
+    // Subscriber: ElectricHavoc
+    // Subscriber: ericrisch
+    //---------------------------------------------------
     [PluginActionId("com.barraider.wintools.appvolumeset")]
     public class AppVolumeSetAction : PluginBase
     {
@@ -26,7 +31,10 @@ namespace WinTools.Actions
                     Application = String.Empty,
                     Volume = DEFAULT_VOLUME_LEVEL.ToString(),
                     ShowVolume = false,
-                    ShowAppName = false
+                    ShowAppName = false,
+                    FadeVolume = false,
+                    FadeLength = DEFAULT_FADE_LENGTH_MS.ToString()
+
                 };
                 return instance;
             }
@@ -46,13 +54,20 @@ namespace WinTools.Actions
             [JsonProperty(PropertyName = "showAppName")]
             public bool ShowAppName { get; set; }
 
+            [JsonProperty(PropertyName = "fadeVolume")]
+            public bool FadeVolume { get; set; }
+
+            [JsonProperty(PropertyName = "fadeLength")]
+            public String FadeLength { get; set; }
         }
 
         #region Private Members
         private const int DEFAULT_VOLUME_LEVEL = 100;
+        private const int DEFAULT_FADE_LENGTH_MS = 1000;
 
-        private PluginSettings settings;
+        private readonly PluginSettings settings;
         private int volume = DEFAULT_VOLUME_LEVEL;
+        private int fadeLength = DEFAULT_FADE_LENGTH_MS;
 
         #endregion
         public AppVolumeSetAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
@@ -60,6 +75,7 @@ namespace WinTools.Actions
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
@@ -88,7 +104,12 @@ namespace WinTools.Actions
             }
 
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Setting {settings.Application}'s volume to {volume}");
-            if (await AppVolume.SetAppVolume(settings.Application, volume))
+            int totalFadeLength = 0;
+            if (settings.FadeVolume)
+            {
+                totalFadeLength = fadeLength;
+            }
+            if (await AppVolume.SetAppVolume(settings.Application, volume, totalFadeLength))
             {
                 await Connection.ShowOk();
             }
@@ -113,11 +134,14 @@ namespace WinTools.Actions
                 title = settings.Application;
             }
 
-            var appInfo = (await AppVolume.GetVolumeApplicationsStatus()).Where(app => app.Name == settings.Application).FirstOrDefault();
-            if (appInfo != null)
+            if (settings.ShowVolume)
             {
-                // Append volume on new line if app name is also selected
-                title = title + (String.IsNullOrEmpty(title) ? "" : "\n") + Math.Round(appInfo.Volume * 100).ToString();
+                var appInfo = (await AppVolume.GetVolumeApplicationsStatus()).Where(app => app.Name == settings.Application).FirstOrDefault();
+                if (appInfo != null)
+                {
+                    // Append volume on new line if app name is also selected
+                    title = title + (String.IsNullOrEmpty(title) ? "" : "\n") + Math.Round(appInfo.Volume * 100).ToString();
+                }
             }
 
             await Connection.SetTitleAsync(title);
@@ -145,8 +169,13 @@ namespace WinTools.Actions
             if (!Int32.TryParse(settings.Volume, out volume))
             {
                 settings.Volume = DEFAULT_VOLUME_LEVEL.ToString();
-                SaveSettings();
             }
+
+            if (!Int32.TryParse(settings.FadeLength, out fadeLength))
+            {
+                settings.FadeLength = DEFAULT_FADE_LENGTH_MS.ToString();
+            }
+            SaveSettings();
         }
 
         private Task SaveSettings()

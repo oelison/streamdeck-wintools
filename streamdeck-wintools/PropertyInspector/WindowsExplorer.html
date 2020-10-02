@@ -24,6 +24,31 @@
             <p>3. Now short press every time you want to see that directory</p>
             <p>4. Repeat steps 1-2 every time you want to modify the directory stored</p>
         </details>
+        <div type="radio" class="sdpi-item" id="dvShortPressAction">
+            <div class="sdpi-item-label">Short Press Action</div>
+            <div class="sdpi-item-value ">
+                <div class="sdpi-item-child">
+                    <input id="shortPressOpenExplorer" class="sdProperty sdCheckbox" type="radio" name="shortPress" checked oninput="setSettings()">
+                    <label for="shortPressOpenExplorer" class="sdpi-item-label"><span></span>Open Explorer</label>
+                </div>
+                <div class="sdpi-item-child">
+                    <input id="shortPressCopyToClipboard" class="sdProperty sdCheckbox" type="radio" name="shortPress" checked oninput="setSettings()">
+                    <label for="shortPressCopyToClipboard" class="sdpi-item-label"><span></span>Copy Folder path to Clipboard</label>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div type="checkbox" class="sdpi-item" id="dvLockSelection">
+            <div class="sdpi-item-label">Lock Selection</div>
+            <div class="sdpi-item-value">
+                <input id="lockSelection" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
+                <label for="lockSelection" class="sdpi-item-label"><span></span>Lock selection (disable long press)</label>
+            </div>
+        </div>
+        <details class="message">
+            <summary>While 'Lock Selection' is enabled, you won't be able to change the selected folder</summary>
+        </details>
+        <hr />
         <div type="checkbox" class="sdpi-item" id="dvSoundOnChange">
             <div class="sdpi-item-label">Sound</div>
             <div class="sdpi-item-value">
@@ -44,6 +69,7 @@
                     <label class="sdpi-file-label" for="playSoundOnSetFile">Choose file...</label>
                 </div>
             </div>
+            <hr />
         </div>
         <div type="range" class="sdpi-item sdShowTooltip" id="dvLongKeypressTime">
             <div class="sdpi-item-label" id="longKeypressTimeTitle">Long Keypress Time</div>

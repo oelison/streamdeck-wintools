@@ -50,8 +50,19 @@
                 <label for="longKeypressTime" class="rangeLabel"></label>
             </div>
         </div>
+        <hr />
+        <div class="sdpi-item" id="dvClipboardId">
+            <div class="sdpi-item-label">Shared Id (optional)</div>
+            <input class="sdpi-item-value sdProperty" placeholder="clipboard1" value="" id="sharedId" oninput="setSettings()">
+        </div>
+        <details class="message">
+            <summary>For instructions on how to use the Shared Id <span class="linkspan"> CLICK HERE</span></summary>
+            <p>By default, every instance of a Multi-Clip is its own clipboard.</p>
+            <p>This function allows you to share clipboard across multiple stream deck profiles.
+            Type the same name/id in 'Shared Id' across all Multi-Clips that you want to reuse as the same clipboard.</p>
+        </details>
         <div class="sdpi-info-label hidden" style="top: -1000;" value="">Tooltip</div>
-        <hr>
+        <hr />
         <div class="sdpi-item" id="dvReset">
             <div class="sdpi-item-label">Clear</div>
             <button class="sdpi-item-value" onclick="resetMultiClips()">Clear Multi Clips</button>

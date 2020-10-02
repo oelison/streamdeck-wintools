@@ -1,4 +1,5 @@
 ﻿using BarRaider.SdTools;
+using BarRaider.SdTools.Wrappers;
 using NAudio.Wave;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,6 +14,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WinTools.Backend;
 using WinTools.Wrappers;
 
@@ -24,6 +26,8 @@ namespace WinTools
     // 143 Bits: Rykouh
     // 924 Bits: inclaved
     // Subscriber: SP__LIT
+    // Subscriber: Tek_Soup
+    // Subscriber: CyberlightGames
     //---------------------------------------------------
 
     [PluginActionId("com.barraider.wintools.windowsexplorer")]
@@ -49,6 +53,9 @@ namespace WinTools
                     PlaybackDevice = String.Empty,
                     PlaySoundOnSetFile = String.Empty,
                     LongKeypressTime = LONG_KEYPRESS_LENGTH_MS.ToString(),
+                    LockSelection = false,
+                    ShortPressOpenExplorer = true,
+                    ShortPressCopyToClipboard = false
                 };
                 return instance;
             }
@@ -71,11 +78,19 @@ namespace WinTools
             [FilenameProperty]
             [JsonProperty(PropertyName = "playSoundOnSetFile")]
             public string PlaySoundOnSetFile { get; set; }
+
+            [JsonProperty(PropertyName = "lockSelection")]
+            public bool LockSelection { get; set; }
+
+            [JsonProperty(PropertyName = "shortPressOpenExplorer")]
+            public bool ShortPressOpenExplorer { get; set; }
+
+            [JsonProperty(PropertyName = "shortPressCopyToClipboard")]
+            public bool ShortPressCopyToClipboard { get; set; }           
         }
 
         #region Private Members
         private const int LONG_KEYPRESS_LENGTH_MS = 600;
-        private const int STRING_SPLIT_SIZE = 7;
 
         private bool longKeyPressed = false;
         private int longKeypressTime = LONG_KEYPRESS_LENGTH_MS;
@@ -84,6 +99,7 @@ namespace WinTools
 
         private readonly PluginSettings settings;
         private GlobalSettings global;
+        private TitleParameters titleParameters;
 
         #endregion
         public WindowsExplorerAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
@@ -91,21 +107,25 @@ namespace WinTools
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
                 this.settings = PluginSettings.CreateDefaultSettings();
+                SaveSettings();
             }
             else
             {
                 this.settings = payload.Settings.ToObject<PluginSettings>();
             }
+            Connection.OnTitleParametersDidChange += Connection_OnTitleParametersDidChange;
             tmrRunLongPress.Interval = longKeypressTime;
             tmrRunLongPress.Elapsed += TmrRunLongPress_Elapsed;
 
-            PropagatePlaybackDevices();
+            InitializeSettings();
             GlobalSettingsManager.Instance.RequestGlobalSettings();
             SetPathTitle();
         }
+
         public override void Dispose()
         {
             tmrRunLongPress.Stop();
+            Connection.OnTitleParametersDidChange -= Connection_OnTitleParametersDidChange;
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
         }
 
@@ -137,7 +157,7 @@ namespace WinTools
         public async override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
             Tools.AutoPopulateSettings(settings, payload.Settings);
-            PropagatePlaybackDevices();
+            InitializeSettings();
             await SetGlobalSettings();
             await SaveSettings();
         }
@@ -147,11 +167,18 @@ namespace WinTools
             // Global Settings exist
             if (payload?.Settings != null && payload.Settings.Count > 0)
             {
+                bool currentPlaySoundOnSet = settings.PlaySoundOnSet;
                 global = payload.Settings.ToObject<GlobalSettings>();
                 settings.PlaySoundOnSet = global.PlaySoundOnSet;
                 settings.PlaybackDevice = global.PlaybackDevice;
                 settings.PlaySoundOnSetFile = global.PlaySoundOnSetFile;
                 await SaveSettings();
+
+                if (settings.PlaySoundOnSet != currentPlaySoundOnSet)
+                {
+                    PropagatePlaybackDevices();
+                }
+
             }
             else // Global settings do not exist
             {
@@ -175,8 +202,17 @@ namespace WinTools
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Short Keypress");
 
-            // Open a windows explorer to the stored path
-            LaunchWindowsExplorer();
+
+            if (settings.ShortPressOpenExplorer)
+            {
+
+                // Open a windows explorer to the stored path
+                LaunchWindowsExplorer();
+            }
+            else if (settings.ShortPressCopyToClipboard)
+            {
+                CopyFolderToClipboard();
+            }
         }
 
         private async Task HandleLongKeyPress()
@@ -184,16 +220,22 @@ namespace WinTools
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Long Keypress");
             longKeyPressed = true;
 
+            if (settings.LockSelection)
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"Ignoring long keypress because Lock Selection is enabled");
+                await Connection.ShowAlert();
+                return;
+            }
+
             settings.Path = await GetWindowsExplorerPath();
 
             if (!String.IsNullOrEmpty(settings.Path))
             {
-                PlaySoundOnSet();
+                await PlaySoundOnSet();
             }
 
             await SaveSettings();
             SetPathTitle();
-
         }
 
         private async Task<string> GetWindowsExplorerPath()
@@ -237,17 +279,7 @@ namespace WinTools
                 if (!String.IsNullOrEmpty(settings.Path))
                 {
                     DirectoryInfo di = new DirectoryInfo(settings.Path);
-                    pathTitle = di.Name;
-
-                    // Split to 3 lines
-                    for (int idx = 1; idx <= 2; idx++)
-                    {
-                        int cutSize = STRING_SPLIT_SIZE * idx;
-                        if (pathTitle.Length > cutSize)
-                        {
-                            pathTitle = $"{pathTitle.Substring(0, cutSize)}\n{pathTitle.Substring(cutSize)}";
-                        }
-                    }
+                    pathTitle = Tools.SplitStringToFit(di.Name, titleParameters);                    
                 }
             }
             catch (Exception ex)
@@ -295,6 +327,16 @@ namespace WinTools
             return false;
         }
 
+        private void CopyFolderToClipboard()
+        {
+            if (String.IsNullOrEmpty(settings.Path))
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"CopyFolderToClipboard called, but Path is empty");
+                return;
+            }
+
+            SetClipboard(settings.Path);
+        }
 
         private void LaunchWindowsExplorer()
         {
@@ -313,11 +355,13 @@ namespace WinTools
                 }
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"LaunchWindowsExplorer launching new instance");
                 // Prepare the process to run
-                ProcessStartInfo start = new ProcessStartInfo();
+                ProcessStartInfo start = new ProcessStartInfo
+                {
 
-                // Enter the executable to run, including the complete path
-                start.FileName = settings.Path.Replace('/', '\\');
-                start.WindowStyle = ProcessWindowStyle.Normal;
+                    // Enter the executable to run, including the complete path
+                    FileName = settings.Path.Replace('/', '\\'),
+                    WindowStyle = ProcessWindowStyle.Normal
+                };
 
                 // Launch the app
                 var p = Process.Start(start);
@@ -337,13 +381,7 @@ namespace WinTools
             {
                 if (settings.PlaySoundOnSet)
                 {
-                    for (int idx = -1; idx < WaveOut.DeviceCount; idx++)
-                    {
-                        var currDevice = WaveOut.GetCapabilities(idx);
-                        settings.PlaybackDevices.Add(new PlaybackDevice() { ProductName = currDevice.ProductName });
-                    }
-
-                    settings.PlaybackDevices = settings.PlaybackDevices.OrderBy(p => p.ProductName).ToList();
+                    settings.PlaybackDevices = AudioUtils.Common.GetAllPlaybackDevices(true).Select(d => new PlaybackDevice() { ProductName = d }).ToList();
                     SaveSettings();
                 }
             }
@@ -353,10 +391,27 @@ namespace WinTools
             }
         }
 
-        private void PlaySoundOnSet()
+        private void InitializeSettings()
         {
-            Task.Run(() =>
+            if (!Int32.TryParse(settings.LongKeypressTime, out longKeypressTime))
             {
+                settings.LongKeypressTime = LONG_KEYPRESS_LENGTH_MS.ToString();
+                SaveSettings();
+            }
+
+            // Backwards compatibility 
+            if (!settings.ShortPressOpenExplorer && !settings.ShortPressCopyToClipboard)
+            {
+                settings.ShortPressOpenExplorer = true;
+                SaveSettings();
+            }
+
+            PropagatePlaybackDevices();
+        }
+
+        private async Task PlaySoundOnSet()
+        {
+            
                 if (!settings.PlaySoundOnSet)
                 {
                     return;
@@ -375,35 +430,8 @@ namespace WinTools
                 }
 
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"PlaySoundOnEnd called. Playing {settings.PlaySoundOnSetFile} on device: {settings.PlaybackDevice}");
-                var deviceNumber = GetPlaybackDeviceFromDeviceName(settings.PlaybackDevice);
-                using (var audioFile = new AudioFileReader(settings.PlaySoundOnSetFile))
-                {
-                    using (var outputDevice = new WaveOutEvent())
-                    {
-                        outputDevice.DeviceNumber = deviceNumber;
-                        outputDevice.Init(audioFile);
-                        outputDevice.Play();
-                        while (outputDevice.PlaybackState == PlaybackState.Playing)
-                        {
-                            System.Threading.Thread.Sleep(1000);
-                        }
-                        outputDevice.Stop();
-                    }
-                }
-            });
-        }
 
-        private int GetPlaybackDeviceFromDeviceName(string deviceName)
-        {
-            for (int idx = -1; idx < WaveOut.DeviceCount; idx++)
-            {
-                var currDevice = WaveOut.GetCapabilities(idx);
-                if (deviceName == currDevice.ProductName)
-                {
-                    return idx;
-                }
-            }
-            return -1;
+                await AudioUtils.Common.PlaySound(settings.PlaySoundOnSetFile, settings.PlaybackDevice);
         }
 
         [DllImport("user32.dll")]
@@ -427,6 +455,31 @@ namespace WinTools
             global.PlaybackDevice = settings.PlaybackDevice;
             global.PlaySoundOnSetFile = settings.PlaySoundOnSetFile;
             await Connection.SetGlobalSettingsAsync(JObject.FromObject(global));
+        }
+
+        private void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
+        {
+            titleParameters = e.Event?.Payload?.TitleParameters;
+            SetPathTitle();
+        }
+        private void SetClipboard(string text)
+        {
+            Thread staThread = new Thread(
+                delegate ()
+                {
+                    try
+                    {
+                        Clipboard.SetText(text);
+                    }
+
+                    catch (Exception ex)
+                    {
+                        Logger.Instance.LogMessage(TracingLevel.ERROR, $"SetClipboard exception: {ex}");
+                    }
+                });
+            staThread.SetApartmentState(ApartmentState.STA);
+            staThread.Start();
+            staThread.Join();
         }
 
 

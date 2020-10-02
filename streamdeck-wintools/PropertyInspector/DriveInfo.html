@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>Drive Info Settings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <details class="message">
+            <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
+        </details>
+        <div class="sdpi-item" id="dvDrive">
+            <div class="sdpi-item-label">Drive</div>
+            <select class="sdpi-item-value select sdProperty sdList" id="diskDrives" oninput="setSettings()" sdListTextProperty="displayName" sdListValueProperty="name" sdValueField="selectedDrive"></select>
+        </div>
+        <div type="color" class="sdpi-item" id="dvLowColor">
+            <div class="sdpi-item-label">Low % Threshold</div>
+            <input type="color" class="sdpi-item-value sdProperty" value="#FFFF00" id="lowColor" oninput="setSettings()">
+            <input class="sdpi-item-value sdProperty" placeholder="20" value="" id="lowThreshold" oninput="setSettings()">
+        </div>
+        <div type="color" class="sdpi-item" id="dvPeakColor">
+            <div class="sdpi-item-label">Critical % Threshold</div>
+            <input type="color" class="sdpi-item-value sdProperty" value="#FF0000" id="criticalColor" oninput="setSettings()">
+            <input class="sdpi-item-value sdProperty" placeholder="10" value="" id="criticalThreshold" oninput="setSettings()">
+        </div>
+        <div class="sdpi-item" id="dvBackgroundImage">
+            <div class="sdpi-item-label">Background</div>
+            <div class="sdpi-item-group file" id="filepickergroup">
+                <input class="sdpi-item-value sdProperty sdFile" type="file" id="backgroundImage" accept=".jpg, .jpeg, .png, .ico, .gif, .bmp, .tiff" oninput="setSettings()">
+                <label class="sdpi-file-info " for="backgroundImage" id="backgroundImageFilename">No file...</label>
+                <label class="sdpi-file-label" for="backgroundImage">Choose file...</label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

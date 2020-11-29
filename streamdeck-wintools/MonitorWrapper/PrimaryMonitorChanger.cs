@@ -81,6 +81,7 @@ namespace WinTools.MonitorWrapper
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Ansi)]
     public struct DEVMODE
     {
+#pragma warning disable IDE0044 // Add readonly modifier
         public const int CCHDEVICENAME = 32;
         public const int CCHFORMNAME = 32;
 
@@ -99,6 +100,7 @@ namespace WinTools.MonitorWrapper
         public UInt32 dmFields;
 
         [System.Runtime.InteropServices.FieldOffset(44)]
+
         Int16 dmOrientation;
         [System.Runtime.InteropServices.FieldOffset(46)]
         Int16 dmPaperSize;
@@ -149,6 +151,7 @@ namespace WinTools.MonitorWrapper
         public Int32 dmNup;
         [System.Runtime.InteropServices.FieldOffset(120)]
         public Int32 dmDisplayFrequency;
+#pragma warning restore IDE0044 // Add readonly modifier
     }
 
     public enum DISP_CHANGE : int

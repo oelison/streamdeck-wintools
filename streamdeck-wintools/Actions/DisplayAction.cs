@@ -194,7 +194,7 @@ namespace WinTools.Actions
                 }
                 else
                 {
-                    icon = actionRequest.FontAwesomeIcon.Value.ToBitmap(ICON_SIZE_PIXELS, Color.Red);
+                    icon = actionRequest.FontAwesomeIcon.Value.ToBitmap(Color.Red, ICON_SIZE_PIXELS);
                 }
 
 

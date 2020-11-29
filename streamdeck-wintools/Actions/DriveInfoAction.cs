@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -21,10 +22,16 @@ namespace WinTools.Actions
     // Subscriber: Tek_Soup
     // Subscriber: KTremain
     // Subscriber: Craigs_Cave
+    // Subscriber: Jeffkang2
     //---------------------------------------------------
     [PluginActionId("com.barraider.wintools.driveinfo")]
     public class DriveInfoAction : PluginBase
     {
+        private enum DisplayMode
+        {
+            SingleDrive = 0,
+            MultipleDrives = 1
+        }
         private class PluginSettings
         {
             public static PluginSettings CreateDefaultSettings()
@@ -37,7 +44,10 @@ namespace WinTools.Actions
                     LowThreshold = DEFAULT_LOW_THRESHOLD.ToString(),
                     CriticalColor = DEFAULT_CRITICAL_COLOR,
                     CriticalThreshold = DEFAULT_CRITICAL_THRESHOLD.ToString(),
-                    BackgroundImage = String.Empty
+                    BackgroundImage = String.Empty,
+                    ShowLabel = false,
+                    DisplayMode = DisplayMode.SingleDrive,
+                    RotationSpeed = DEFAULT_ROTATION_SPEED_SECONDS.ToString(),
                 };
                 return instance;
             }
@@ -63,6 +73,16 @@ namespace WinTools.Actions
             [FilenameProperty]
             [JsonProperty(PropertyName = "backgroundImage")]
             public String BackgroundImage { get; set; }
+
+            [JsonProperty(PropertyName = "showLabel")]
+            public bool ShowLabel { get; set; }
+
+            [JsonProperty(PropertyName = "displayMode")]
+            public DisplayMode DisplayMode { get; set; }
+
+            [JsonProperty(PropertyName = "rotationSpeed")]
+            public string RotationSpeed { get; set; }
+
         }
 
         #region Private Members
@@ -72,6 +92,7 @@ namespace WinTools.Actions
         private const int DEFAULT_LOW_THRESHOLD = 20;
         private const string DEFAULT_CRITICAL_COLOR = "#FF0000";
         private const int DEFAULT_CRITICAL_THRESHOLD = 10;
+        private const int DEFAULT_ROTATION_SPEED_SECONDS = 5;
 
         private readonly PluginSettings settings;
         private DriveInfo driveInfo = null;
@@ -80,6 +101,9 @@ namespace WinTools.Actions
         private int criticalThreshold;
         private DateTime lastKeyDraw = DateTime.MinValue;
         private Image backgroundImage = null;
+        private int rotationSpeed = DEFAULT_ROTATION_SPEED_SECONDS;
+        private int currentDrive = 0;
+        private DateTime lastSwitchedDrive = DateTime.MinValue;
         #endregion
 
         public DriveInfoAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
@@ -108,9 +132,30 @@ namespace WinTools.Actions
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
         }
 
-        public override void KeyPressed(KeyPayload payload)
+        public async override void KeyPressed(KeyPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Pressed {this.GetType()}");
+            string drivePath;
+
+            if (settings.DisplayMode == DisplayMode.SingleDrive)
+            {
+                if (driveInfo == null)
+                {
+                    Logger.Instance.LogMessage(TracingLevel.ERROR, "Key Pressed but driveInfo is null!");
+                    await Connection.ShowAlert();
+                    return;
+                }
+                else
+                {
+                    drivePath = driveInfo?.Name;
+                }
+            }
+            else // Multiple Drives, find the current selected one
+            {
+                drivePath = settings.DiskDrives[currentDrive]?.Name;
+            }
+
+            await OpenFolder(drivePath);
         }
 
         public override void KeyReleased(KeyPayload payload) { }
@@ -140,14 +185,17 @@ namespace WinTools.Actions
 
         private void FetchDiskDrives()
         {
-            settings.DiskDrives = DriveInfo.GetDrives().Select(d => new DiskDrive(d)).ToList();
+            settings.DiskDrives = DriveInfo.GetDrives().Where(d => d.IsReady).Select(d => new DiskDrive(d)).ToList();
             SaveSettings();
         }
 
         private void InitializeSettings()
         {
             lastKeyDraw = DateTime.MinValue;
+            lastSwitchedDrive = DateTime.Now;
+            currentDrive = 0;
             driveInfo = null;
+            bool shouldSaveSettings = false;
             if (!String.IsNullOrEmpty(settings.SelectedDrive))
             {
                 driveInfo = new DriveInfo(settings.SelectedDrive);
@@ -156,24 +204,35 @@ namespace WinTools.Actions
             if (!Int32.TryParse(settings.LowThreshold, out lowThreshold))
             {
                 settings.LowThreshold = DEFAULT_LOW_THRESHOLD.ToString();
-                SaveSettings();
+                shouldSaveSettings = true;
             }
 
             if (!Int32.TryParse(settings.CriticalThreshold, out criticalThreshold))
             {
                 settings.CriticalThreshold = DEFAULT_CRITICAL_THRESHOLD.ToString();
-                SaveSettings();
+                shouldSaveSettings = true;
             }
 
             if (String.IsNullOrEmpty(settings.LowColor))
             {
                 settings.LowColor = DEFAULT_LOW_COLOR;
-                SaveSettings();
+                shouldSaveSettings = true;
             }
 
             if (String.IsNullOrEmpty(settings.CriticalColor))
             {
                 settings.CriticalColor = DEFAULT_CRITICAL_COLOR;
+                shouldSaveSettings = true;
+            }
+
+            if (!Int32.TryParse(settings.RotationSpeed, out rotationSpeed))
+            {
+                settings.RotationSpeed = DEFAULT_ROTATION_SPEED_SECONDS.ToString();
+                shouldSaveSettings = true;
+            }
+
+            if (shouldSaveSettings)
+            {
                 SaveSettings();
             }
 
@@ -219,23 +278,44 @@ namespace WinTools.Actions
             const int BAR_HEIGHT = 12;
             const int BAR_WIDTH = 102; // 1 Pixel on each side for the border
             const string BAR_FILL_COLOR = "#26a0da";
-            if (driveInfo == null)
-            {
-                return;
-            }
 
+            DriveInfo currentDriveInfo = driveInfo;
             if (titleParameters == null)
             {
                 return;
             }
 
-            if ((DateTime.Now - lastKeyDraw).TotalMilliseconds < DRAW_KEY_COOLDOWN_MS)
+            if (settings.DisplayMode == DisplayMode.SingleDrive && driveInfo == null)
+            {
+                return;
+            }
+            if (settings.DisplayMode == DisplayMode.SingleDrive && (DateTime.Now - lastKeyDraw).TotalMilliseconds < DRAW_KEY_COOLDOWN_MS)
+            {
+                return;
+            }
+            else if (settings.DisplayMode == DisplayMode.MultipleDrives && (DateTime.Now - lastSwitchedDrive).TotalSeconds >= rotationSpeed)
+            {
+                lastSwitchedDrive = DateTime.Now;
+                currentDrive = (currentDrive + 1) % settings.DiskDrives.Count;
+            }
+            else if (settings.DisplayMode == DisplayMode.MultipleDrives && lastKeyDraw > lastSwitchedDrive) // We drew AFTER we switched drives
             {
                 return;
             }
 
+            if (settings.DisplayMode == DisplayMode.MultipleDrives)
+            {
+                currentDriveInfo = new DriveInfo(settings.DiskDrives[currentDrive]?.Name);
+            }
+
             lastKeyDraw = DateTime.Now;
-            double percentageFree = (int)(((double)driveInfo.AvailableFreeSpace / driveInfo.TotalSize) * 100);
+            if (currentDriveInfo == null)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"DrawKey currentDriveInfo is null!");
+                return;
+            }
+            
+            double percentageFree = (int)(((double)currentDriveInfo.AvailableFreeSpace / currentDriveInfo.TotalSize) * 100);
             using (Bitmap bmp = Tools.GenerateGenericKeyImage(out Graphics graphics))
             {
                 int height = bmp.Height;
@@ -261,14 +341,23 @@ namespace WinTools.Actions
                 SolidBrush fgBrush = new SolidBrush(textColor);
 
                 // Drive Letter
-                string title = driveInfo.RootDirectory.ToString();
+                string title = currentDriveInfo.RootDirectory.ToString();
+                if (settings.ShowLabel && !String.IsNullOrEmpty(currentDriveInfo.VolumeLabel))
+                {
+                    title = $"{currentDriveInfo.VolumeLabel} ({currentDriveInfo.Name.Substring(0, currentDriveInfo.Name.Length - 1)})";
+                }
                 float stringHeight = STARTING_TEXT_Y;
-                float stringWidth = graphics.GetTextCenter(title, width, fontDetails);
-                stringHeight = graphics.DrawAndMeasureString(title, fontDetails, fgBrush, new PointF(stringWidth, stringHeight)) + TEXT_PADDING_Y;
+                float stringWidth = 0;
+                float fontSize = graphics.GetFontSizeWhereTextFitsImage(title, width, fontDetails);
+                using (Font fontTitleDetails = new Font(fontDetails.FontFamily, fontSize, FontStyle.Bold, GraphicsUnit.Pixel))
+                {
+                    stringWidth = graphics.GetTextCenter(title, width, fontTitleDetails);
+                    stringHeight = graphics.DrawAndMeasureString(title, fontTitleDetails, fgBrush, new PointF(stringWidth, stringHeight)) + TEXT_PADDING_Y;
+                }
 
                 // Percentage free
                 title = $"{percentageFree}% free";
-                float fontSize = graphics.GetFontSizeWhereTextFitsImage(title, width, fontDetails);
+                fontSize = graphics.GetFontSizeWhereTextFitsImage(title, width, fontDetails);
                 using (Font fontPercentage = new Font(titleParameters.FontFamily, fontSize, FontStyle.Bold, GraphicsUnit.Pixel))
                 {
                     stringWidth = graphics.GetTextCenter(title, width, fontPercentage);
@@ -281,13 +370,43 @@ namespace WinTools.Actions
                 stringHeight += BAR_HEIGHT + TEXT_PADDING_Y;
 
                 // Free space left
-                title = Tools.FormatBytes(driveInfo.AvailableFreeSpace);
+                title = Tools.FormatBytes(currentDriveInfo.AvailableFreeSpace);
                 stringWidth = graphics.GetTextCenter(title, width, fontDetails);
                 stringHeight = graphics.DrawAndMeasureString(title, fontDetails, fgBrush, new PointF(stringWidth, stringHeight)) ;
 
                 await Connection.SetImageAsync(bmp);
                 graphics.Dispose();
                 fontDetails.Dispose();
+            }
+        }
+
+        private async Task OpenFolder(string path)
+        {
+            if (String.IsNullOrEmpty(path))
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, "OpenFolder: path is null!");
+                await Connection.ShowAlert();
+                return;
+            }
+
+            try
+            {
+                ProcessStartInfo start = new ProcessStartInfo
+                {
+
+                    // Enter the executable to run, including the complete path
+                    FileName = path.Replace('/', '\\'),
+                    WindowStyle = ProcessWindowStyle.Normal
+                };
+
+                // Launch the folder
+                var p = Process.Start(start);
+                await Connection.ShowOk();
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"OpenFolder exception: {ex}");
+                await Connection.ShowAlert();
             }
         }
 

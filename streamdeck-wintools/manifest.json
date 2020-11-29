@@ -233,6 +233,54 @@
       "PropertyInspectorPath": "PropertyInspector/Uptime.html"
     },
     {
+      "Icon": "Images/vdIcon",
+      "Name": "Virtual Desktop - Create",
+      "States": [
+        {
+          "Image": "Images/vdCreateAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Creates a new Virtual Desktop",
+      "UUID": "com.barraider.wintools.vdcreate",
+      "PropertyInspectorPath": "PropertyInspector/VDCreate.html"
+    },
+    {
+      "Icon": "Images/vdIcon",
+      "Name": "Virtual Desktop - Delete",
+      "States": [
+        {
+          "Image": "Images/vdDeleteAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Deletes an existing Virtual Desktop",
+      "UUID": "com.barraider.wintools.vddelete",
+      "PropertyInspectorPath": "PropertyInspector/VDDelete.html"
+    },
+    {
+      "Icon": "Images/vdIcon",
+      "Name": "Switch Virtual Desktop",
+      "States": [
+        {
+          "Image": "Images/vdSwitchAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Switches to a Virtual Desktop",
+      "UUID": "com.barraider.wintools.vdswitch",
+      "PropertyInspectorPath": "PropertyInspector/VDSwitch.html"
+    },
+    {
       "Icon": "Images/folderIcon",
       "Name": "Windows Explorer Scratch Pad",
       "States": [
@@ -249,11 +297,11 @@
     }
   ],
   "Author": "BarRaider",
-  "Description": "Advanced set of useful plugins for controlling Windows. Use the 'Explorer Scratch Pad' to quickly cycle between common folders, 'Multi-Clip' turns every key to an individual clipboard, Ping servers and see latency, change power plans, Stop/Start/Restart Windows services and more...\n*** NEW *** Control the volume of your Windows apps from the Stream Deck!",
+  "Description": "Advanced set of useful plugins for controlling Windows. Control the volume of your Windows apps from the Stream Deck, Use the 'Explorer Scratch Pad' to quickly cycle between common folders, 'Multi-Clip' turns every key to an individual clipboard, Ping servers and see latency, change power plans, Stop/Start/Restart Windows services and more...\n*** NEW *** Virtual Desktop support",
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",
-  "Version": "1.2",
+  "Version": "1.3",
   "CodePath": "com.barraider.wintools",
   "Category": "Win Tools [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
@@ -285,6 +333,6 @@
   ],
   "SDKVersion": 2,
   "Software": {
-    "MinimumVersion": "4.8"
+    "MinimumVersion": "4.9"
   }
 }

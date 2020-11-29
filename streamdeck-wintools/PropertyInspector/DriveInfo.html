@@ -7,16 +7,39 @@
     <meta name=apple-mobile-web-app-status-bar-style content=black>
     <title>Drive Info Settings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/rangeTooltip.css">
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/rangeTooltip.js"></script>
+    <script src="DriveInfo.js"></script>
 </head>
 <body>
     <div class="sdpi-wrapper">
         <details class="message">
             <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
         </details>
-        <div class="sdpi-item" id="dvDrive">
-            <div class="sdpi-item-label">Drive</div>
-            <select class="sdpi-item-value select sdProperty sdList" id="diskDrives" oninput="setSettings()" sdListTextProperty="displayName" sdListValueProperty="name" sdValueField="selectedDrive"></select>
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Mode</div>
+            <select class="sdpi-item-value select sdProperty" id="displayMode" oninput="setSettings()">
+                <option value="0">Single Drive</option>
+                <option value="1">Multiple Drives</option>
+            </select>
+        </div>
+        <div id="dvSingleDriveSettings">
+            <div class="sdpi-item" id="dvDrive">
+                <div class="sdpi-item-label">Drive</div>
+                <select class="sdpi-item-value select sdProperty sdList" id="diskDrives" oninput="setSettings()" sdListTextProperty="displayName" sdListValueProperty="name" sdValueField="selectedDrive"></select>
+            </div>
+        </div>
+        <div id="dvMultipleDrivesSettings" style="display:none">
+            <div type="range" class="sdpi-item sdShowTooltip" id="dvRotationSpeed">
+                <div class="sdpi-item-label">Rotation Speed (sec)</div>
+                <div class="sdpi-item-value">
+                    <span class="clickable" value="1">1</span>
+                    <input type="range" min="1" max="120" data-suffix=" seconds" value="5" class="sdProperty" oninput="setSettings()" id="rotationSpeed">
+                    <span class="clickable" value="120">120</span>
+                    <label for="delay" class="rangeLabel"></label>
+                </div>
+            </div>
         </div>
         <div type="color" class="sdpi-item" id="dvLowColor">
             <div class="sdpi-item-label">Low % Threshold</div>
@@ -36,6 +59,14 @@
                 <label class="sdpi-file-label" for="backgroundImage">Choose file...</label>
             </div>
         </div>
+        <div type="checkbox" class="sdpi-item" id="dvShowLabel">
+            <div class="sdpi-item-label empty"></div>
+            <div class="sdpi-item-value">
+                <input id="showLabel" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
+                <label for="showLabel" class="sdpi-item-label"><span></span>Display drive label</label>
+            </div>
+        </div>
+        <div class="sdpi-info-label hidden" style="top: -1000;" value="">Tooltip</div>
     </div>
 </body>
 </html>

@@ -55,7 +55,8 @@ namespace WinTools
                     LongKeypressTime = LONG_KEYPRESS_LENGTH_MS.ToString(),
                     LockSelection = false,
                     ShortPressOpenExplorer = true,
-                    ShortPressCopyToClipboard = false
+                    ShortPressCopyToClipboard = false,
+                    Encoding = String.Empty
                 };
                 return instance;
             }
@@ -86,7 +87,10 @@ namespace WinTools
             public bool ShortPressOpenExplorer { get; set; }
 
             [JsonProperty(PropertyName = "shortPressCopyToClipboard")]
-            public bool ShortPressCopyToClipboard { get; set; }           
+            public bool ShortPressCopyToClipboard { get; set; }
+
+            [JsonProperty(PropertyName = "encoding")]
+            public string Encoding { get; set; }
         }
 
         #region Private Members
@@ -255,9 +259,17 @@ namespace WinTools
 
                         if (filename.Equals("explorer"))
                         {
+                            Logger.Instance.LogMessage(TracingLevel.DEBUG, $"Path: {ie.Path} Name: {ie.Name} Location: {ie.LocationURL}");
                             // Save the location off to your application
                             Uri uri = new Uri(ie.LocationURL);
-                            return Uri.UnescapeDataString(uri.AbsolutePath);
+
+                            if (String.IsNullOrWhiteSpace(settings.Encoding))
+                            {
+                                return Uri.UnescapeDataString(uri.AbsolutePath);
+                            }
+
+                            Encoding e = Encoding.GetEncoding(settings.Encoding);
+                            return System.Web.HttpUtility.UrlDecode(uri.AbsolutePath, e);
                         }
                     }
                     catch (Exception ex)

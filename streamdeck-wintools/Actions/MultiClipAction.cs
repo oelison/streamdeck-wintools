@@ -36,6 +36,11 @@ namespace WinTools
     [PluginActionId("com.barraider.wintools.multiclip")]
     public class MultiClipAction : PluginBase
     {
+        private enum LongPressAction
+        {
+            StoreSelectedText = 0,
+            StoreClipboard = 1
+        }
         private class PluginSettings
         {
             public static PluginSettings CreateDefaultSettings()
@@ -47,7 +52,8 @@ namespace WinTools
                     PlaybackDevices = null,
                     PlaybackDevice = String.Empty,
                     PlaySoundOnSetFile = String.Empty,
-                    SharedId = String.Empty
+                    SharedId = String.Empty,
+                    LongPressAction = LongPressAction.StoreSelectedText
                 };
                 return instance;
             }
@@ -70,6 +76,9 @@ namespace WinTools
 
             [JsonProperty(PropertyName = "sharedId")]
             public string SharedId { get; set; }
+
+            [JsonProperty(PropertyName = "longPressAction")]
+            public LongPressAction LongPressAction { get; set; }
         }
 
         #region Private Members
@@ -179,11 +188,16 @@ namespace WinTools
             }
         }
 
-        private async Task  HandleLongKeyPress()
+        private async Task HandleLongKeyPress()
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Long Keypress");
             longKeyPressed = true;
-            iis.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.VK_C); // Send a Ctrl-C to copy selection into the clipboard
+
+            if (settings.LongPressAction == LongPressAction.StoreSelectedText)
+            {
+                iis.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.VK_C); // Send a Ctrl-C to copy selection into the clipboard
+                Thread.Sleep(50);
+            }
             ReadFromClipboard(); // Fetch it from the clipboard and store it internally
             await PlaySoundOnSet();
         }

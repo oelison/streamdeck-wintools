@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BarRaider.SdTools;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,10 +19,18 @@ namespace WinTools.Wrappers
 
         public DiskDrive(DriveInfo driveInfo)
         {
-            if (driveInfo != null)
+            try
             {
-                Name = driveInfo.Name;
-                DisplayName = $"{Name} ({driveInfo.VolumeLabel})";
+                if (driveInfo != null)
+                {
+
+                    Name = driveInfo?.Name;
+                    DisplayName = $"{Name} ({driveInfo?.VolumeLabel})";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"DiskDrive ctor Exception {ex}");
             }
         }
     }

@@ -50,6 +50,13 @@
                 <label for="longKeypressTime" class="rangeLabel"></label>
             </div>
         </div>
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Long Press Action</div>
+            <select class="sdpi-item-value select sdProperty" id="longPressAction" oninput="setSettings()">
+                <option value="0">Store Selected Text</option>
+                <option value="1">Store Existing Clipboard Content</option>
+            </select>
+        </div>
         <hr />
         <div class="sdpi-item" id="dvClipboardId">
             <div class="sdpi-item-label">Shared Id (optional)</div>
@@ -58,8 +65,10 @@
         <details class="message">
             <summary>For instructions on how to use the Shared Id <span class="linkspan"> CLICK HERE</span></summary>
             <p>By default, every instance of a Multi-Clip is its own clipboard.</p>
-            <p>This function allows you to share clipboard across multiple stream deck profiles.
-            Type the same name/id in 'Shared Id' across all Multi-Clips that you want to reuse as the same clipboard.</p>
+            <p>
+                This function allows you to share clipboard across multiple stream deck profiles.
+                Type the same name/id in 'Shared Id' across all Multi-Clips that you want to reuse as the same clipboard.
+            </p>
         </details>
         <div class="sdpi-info-label hidden" style="top: -1000;" value="">Tooltip</div>
         <hr />

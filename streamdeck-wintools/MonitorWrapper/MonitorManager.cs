@@ -81,7 +81,6 @@ namespace WinTools.MonitorWrapper
                 var monitor = monitors.FirstOrDefault(mon => mon.WMIInfo?.UserFriendlyName == values[0]);
                 if (monitor != null)
                 {
-                    Logger.Instance.LogMessage(TracingLevel.INFO, $"Found monitor based on unique friendly name");
                     return GetScreenByDeviceName(monitor.DeviceName);
                 }
             }
@@ -91,7 +90,6 @@ namespace WinTools.MonitorWrapper
                 var monitor = monitors.FirstOrDefault(mon => mon.WMIInfo?.SerialNumber == values[1]);
                 if (monitor != null)
                 {
-                    Logger.Instance.LogMessage(TracingLevel.INFO, $"Found monitor based on unique serial");
                     return GetScreenByDeviceName(monitor.DeviceName);
                 }
             }
@@ -101,7 +99,6 @@ namespace WinTools.MonitorWrapper
                 var monitor = monitors.FirstOrDefault(mon => mon.WMIInfo?.InstanceName == values[2]);
                 if (monitor != null)
                 {
-                    Logger.Instance.LogMessage(TracingLevel.INFO, $"Found monitor based on unique instance name");
                     return GetScreenByDeviceName(monitor.DeviceName);
                 }
             }

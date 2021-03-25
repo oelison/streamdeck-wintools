@@ -83,6 +83,7 @@ namespace WinTools
 
         #region Private Members
         private const int LONG_KEYPRESS_LENGTH_MS = 600;
+        private const int MAX_TITLE_LENGTH = 50;
 
         private readonly PluginSettings settings;
         private TitleParameters titleParameters;
@@ -121,22 +122,33 @@ namespace WinTools
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
         }
 
-        public override void KeyPressed(KeyPayload payload)
+        public async override void KeyPressed(KeyPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Pressed {this.GetType()}");
-            longKeyPressed = false;
 
-            tmrRunLongPress.Interval = longKeypressTime > 0 ? longKeypressTime : LONG_KEYPRESS_LENGTH_MS;
-            tmrRunLongPress.Start();
+            if (payload.IsInMultiAction)
+            {
+                await HandleMultiActionKeyPress(payload.UserDesiredState);
+            }
+            else
+            {
+                longKeyPressed = false;
+
+                tmrRunLongPress.Interval = longKeypressTime > 0 ? longKeypressTime : LONG_KEYPRESS_LENGTH_MS;
+                tmrRunLongPress.Start();
+            }
         }
 
         public override void KeyReleased(KeyPayload payload)
         {
             tmrRunLongPress.Stop();
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Released {this.GetType()}");
-            if (!longKeyPressed)
+            if (!payload.IsInMultiAction)
             {
-                HandleShortKeyPress();
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Released {this.GetType()}");
+                if (!longKeyPressed)
+                {
+                    HandleShortKeyPress();
+                }
             }
         }
 
@@ -151,7 +163,7 @@ namespace WinTools
             if (currentValue != previousText)
             {
                 previousText = currentValue;
-                await Connection.SetTitleAsync(currentValue); ;
+                await Connection.SetTitleAsync(currentValue.Truncate(MAX_TITLE_LENGTH)?.Trim());
             }
         }
 
@@ -179,7 +191,7 @@ namespace WinTools
 
         private void HandleShortKeyPress()
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Short Keypress");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"{this.GetType()} Short Keypress");
             string clipboardEntry = CacheManager.Instance.GetValue(clipboardId);
             if (!String.IsNullOrEmpty(clipboardEntry)) // Short Key Press
             {
@@ -190,7 +202,7 @@ namespace WinTools
 
         private async Task HandleLongKeyPress()
         {
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Long Keypress");
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"{this.GetType()} Long Keypress");
             longKeyPressed = true;
 
             if (settings.LongPressAction == LongPressAction.StoreSelectedText)
@@ -327,6 +339,27 @@ namespace WinTools
         private void Connection_OnTitleParametersDidChange(object sender, SDEventReceivedEventArgs<BarRaider.SdTools.Events.TitleParametersDidChange> e)
         {
             titleParameters = e.Event?.Payload?.TitleParameters;
+        }
+
+        private async Task HandleMultiActionKeyPress(uint state)
+        {
+            // Multiaction mode, check if desired state is 1 (0==Short Press, 1==Long Press, 2==Clear Multi Clip) 
+            switch (state)
+            {
+                case (0): // Short Keypress
+                    HandleShortKeyPress();
+                    break;
+                case (1): // Long Keypress
+                    await HandleLongKeyPress();
+                    break;
+                case (2): // Clear Multi Clips
+                    CacheManager.Instance.ClearCache();
+                    Logger.Instance.LogMessage(TracingLevel.WARN, $"{this.GetType()} ResetMultiClips called, clipboards are cleared");
+                    break;
+                default:
+                    Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} HandleMultiActionKeyPress - Invalid State: {state}");
+                    break;
+            }
         }
 
         #endregion

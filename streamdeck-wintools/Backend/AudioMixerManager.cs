@@ -1,4 +1,6 @@
 ﻿using BarRaider.SdTools;
+using BarRaiderAudio;
+using BarRaiderAudio.Wrappers;
 using FontAwesome.Sharp;
 using NAudio.Mixer;
 using System;
@@ -34,7 +36,7 @@ namespace WinTools.Backend
         private static AudioMixerManager instance = null;
         private static readonly object objLock = new object();
 
-        private SDConnection connection = null;
+        private ISDConnection connection = null;
         private StreamDeckDeviceInfo streamDeckDeviceInfo = null;
         private int currentPage = 0;
         private int appsPerPage = 0;
@@ -107,7 +109,7 @@ namespace WinTools.Backend
 
         #region Public Methods
 
-        public async Task<bool> ShowMixer(SDConnection connection, MixerSettings mixerSettings)
+        public async Task<bool> ShowMixer(ISDConnection connection, MixerSettings mixerSettings)
         {
             this.connection = connection;
             this.mixerSettings = mixerSettings;
@@ -265,7 +267,7 @@ namespace WinTools.Backend
 
         private async Task FetchAudioApplications()
         {
-            audioApps = await AppVolume.GetVolumeApplicationsStatus();
+            audioApps = await BRAudio.GetVolumeApplications();
         }
 
         private void DrawAppsRow()
@@ -359,7 +361,7 @@ namespace WinTools.Backend
             }
 
 
-            await AppVolume.AdjustAppVolume(audioApps[appIndex].Name, absVolumeStep);
+            await BRAudio.AdjustAppVolume(audioApps[appIndex].Name, absVolumeStep);
         }
 
         private async Task HandleMuteChange(KeyCoordinates coordinates)
@@ -372,7 +374,7 @@ namespace WinTools.Backend
                 return;
             }
 
-            await AppVolume.ToggleAppMute(audioApps[appIndex].Name);
+            await BRAudio.ToggleAppMute(audioApps[appIndex].Name);
         }
 
         private Image FetchProcessImage(int pid)

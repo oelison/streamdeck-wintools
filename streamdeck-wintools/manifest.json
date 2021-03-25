@@ -35,6 +35,22 @@
       "PropertyInspectorPath": "PropertyInspector/AppAudioMixer.html"
     },
     {
+      "Icon": "Images/deviceAudioIcon",
+      "Name": "App Playback Device",
+      "States": [
+        {
+          "Image": "Images/deviceAudioAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Sets the playback device for a specific application",
+      "UUID": "com.barraider.wintools.appplayback",
+      "PropertyInspectorPath": "PropertyInspector/AppPlayback.html"
+    },
+    {
       "Icon": "Images/soundIcon",
       "Name": "App Volume Adjust",
       "States": [
@@ -69,6 +85,22 @@
       "PropertyInspectorPath": "PropertyInspector/AppVolumeSet.html"
     },
     {
+      "Icon": "Images/deviceDefaultIcon",
+      "Name": "Default Audio Device",
+      "States": [
+        {
+          "Image": "Images/deviceDefaultAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Sets the default playback or recording device",
+      "UUID": "com.barraider.wintools.defaultaudiodevice",
+      "PropertyInspectorPath": "PropertyInspector/DefaultAudioDevice.html"
+    },
+    {
       "Icon": "Images/driveIcon",
       "Name": "Drive Info",
       "States": [
@@ -82,6 +114,37 @@
       "Tooltip": "Shows information about your disk drives",
       "UUID": "com.barraider.wintools.driveinfo",
       "PropertyInspectorPath": "PropertyInspector/DriveInfo.html"
+    },
+    {
+      "Icon": "Images/keyIcon",
+      "Name": "Keyboard Language",
+      "States": [
+        {
+          "Image": "Images/keyAction",
+          "TitleAlignment": "top",
+          "FontSize": "10"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows and changes the current keyboard input language",
+      "UUID": "com.barraider.wintools.keyboardlang",
+      "PropertyInspectorPath": "PropertyInspector/KeyboardLanguage.html"
+    },
+    {
+      "Icon": "Images/keyIcon",
+      "Name": "Keyboard LEDs Display",
+      "States": [
+        {
+          "Image": "Images/keyAction",
+          "TitleAlignment": "middle",
+          "FontSize": "18"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "DisableCaching": true,
+      "Tooltip": "Displays and changes the NumLock, CapsLock and ScrollLock status",
+      "UUID": "com.barraider.wintools.keyboardleds",
+      "PropertyInspectorPath": "PropertyInspector/KeyboardLeds.html"
     },
     {
       "Icon": "Images/copyIcon",
@@ -113,28 +176,22 @@
       "UUID": "com.barraider.wintools.lock"
     },
     {
-      "Icon": "Images/mouseIcon",
-      "Name": "Mouse Location",
-      "States": [
-        {
-          "Image": "Images/mouseAction",
-          "TitleAlignment": "middle",
-          "FontSize": "12"
-        }
-      ],
-      "SupportedInMultiActions": false,
-      "Tooltip": "Shows you the current mouse location on a key, and lets you copy the position",
-      "UUID": "com.barraider.wintools.mouselocation",
-      "PropertyInspectorPath": "PropertyInspector/MouseLocation.html"
-    },
-    {
       "Icon": "Images/multiClipIcon",
       "Name": "Multi Clip",
       "States": [
         {
           "Image": "Images/multiClipAction",
           "TitleAlignment": "middle",
-          "FontSize": "12"
+          "FontSize": "12",
+          "Name": "Key Press"
+        },
+        {
+          "Name": "Long Press",
+          "OnlyForMultiAction": true
+        },
+        {
+          "Name": "Clear All Multi Clips",
+          "OnlyForMultiAction": true
         }
       ],
       "SupportedInMultiActions": true,
@@ -168,6 +225,7 @@
         }
       ],
       "SupportedInMultiActions": true,
+      "DisableCaching": true,
       "Tooltip": "Allows you to switch between the various Windows power plans",
       "UUID": "com.barraider.wintools.powerplanswitcher",
       "PropertyInspectorPath": "PropertyInspector/PowerPlanSwitcher.html"
@@ -183,6 +241,7 @@
         }
       ],
       "SupportedInMultiActions": true,
+      "DisableCaching": true,
       "Tooltip": "Pings servers and shows latency on Stream Deck",
       "UUID": "com.barraider.wintools.ping",
       "PropertyInspectorPath": "PropertyInspector/Ping.html"
@@ -301,7 +360,7 @@
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",
-  "Version": "1.3",
+  "Version": "1.4",
   "CodePath": "com.barraider.wintools",
   "Category": "Win Tools [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",

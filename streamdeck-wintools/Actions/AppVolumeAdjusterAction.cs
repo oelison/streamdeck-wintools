@@ -1,4 +1,6 @@
 ﻿using BarRaider.SdTools;
+using BarRaiderAudio;
+using BarRaiderAudio.Wrappers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -96,7 +98,7 @@ namespace WinTools.Actions
             }
 
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Adjusting {settings.Application}'s volume by {volumeStep}");
-            if (await AppVolume.AdjustAppVolume(settings.Application, volumeStep))
+            if (await BRAudio.AdjustAppVolume(settings.Application, volumeStep))
             {
                 await Connection.ShowOk();
             }
@@ -123,7 +125,7 @@ namespace WinTools.Actions
 
             if (settings.ShowVolume)
             {
-                var appInfo = (await AppVolume.GetVolumeApplicationsStatus()).Where(app => app.Name == settings.Application).FirstOrDefault();
+                var appInfo = (await BRAudio.GetVolumeApplications()).Where(app => app.Name == settings.Application).FirstOrDefault();
                 if (appInfo != null)
                 {
                     // Append volume on new line if app name is also selected
@@ -168,7 +170,7 @@ namespace WinTools.Actions
         private async void FetchApplications()
         {
             // Get all the applications in the Volume Mixer
-            settings.Applications = await AppVolume.GetVolumeApplicationsStatus();
+            settings.Applications = await BRAudio.GetVolumeApplications();
 
             if (settings.Applications == null)
             {

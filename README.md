@@ -1,16 +1,19 @@
 # Win Tools
 Advanced set of useful plugins for controlling Windows from the Stream Deck
 
-## New in v1.3
-- :new: ***VIRTUAL DESKTOP SUPPORT***: Create, Delete and Switch to a Windows Virtual Desktop all from the Stream Deck
-- Use along with Windows Mover & Resizer plugin to manage Virtual Desktops and then move the desired apps to there.
-- Updates to `Drive Info` action:
-    - Added support for rotating between all drives on your PC
-    - Added option to show Drive Label/Name in addition to drive letter
-    - Clicking the key will open Windows Explorer to that drive
-- `Explorer Scratch Pad` now supports folders with non-ASCII characters such as `ä`,`æ`,`א` using the `Encoding Code Page` setting
-- `Multi-Clip` action now also supports fetching the current Clipboard contents (instead of the current highlighted text)
-- Fixed bug in `Multi-Clip` not fetching the right selected text
+## New in v1.4
+- :new: `App Playback Device` action allows you to change the playback device of a specific application from the Stream Deck. Example: Click to move ONLY Spotify to go to your speakers, while the rest goes to your headset.
+    - **Bonus:** Choosing the `Current Focused Window` option will change the playback device to whichever windows is in the foreground
+    - **Bonus #2:** Already includes Multi-Action support
+- :new: `Default Audio Device` action allows you to change the system-default **playback** or **recording** device from the Stream Deck 
+    - **Bonus:** Already includes Multi-Action support
+- :new: `Keyboard Language` action shows you what language you're keyboard is in. Pressing the button will rotate between the different languages installed. (No longer typing complete sentences in the wrong language :facepalm: )
+- :new: `Keyboard Leds` :keyboard: action shows you the status of your Numlock, Capslock and Scrollock on the Stream Deck. 
+    - **Bonus:** You can set the key press to LOCK their state so they can't be modified
+- You can now clear the contents of all Multi Clips (by adding the action to a Multi-Action and choosing that option)
+- Limited length of title in Multi Clip to 50 characters + Trimmed spaces
+- Deprecated `MouseLocation` action as it has now moved into SuperMacro  
+- Improved Disk Drive robustness when dealing with disconnected network drives
 
 ## Features:
 - `App Audio Mixer` - Control the volume of all your Windows apps straight from the Stream Deck!!!
@@ -48,6 +51,17 @@ Please contact the developer. Contact information is available at https://barrai
 
 
 ## Change Log
+
+## New in v1.3
+- :new: ***VIRTUAL DESKTOP SUPPORT***: Create, Delete and Switch to a Windows Virtual Desktop all from the Stream Deck
+- Use along with Windows Mover & Resizer plugin to manage Virtual Desktops and then move the desired apps to there.
+- Updates to `Drive Info` action:
+    - Added support for rotating between all drives on your PC
+    - Added option to show Drive Label/Name in addition to drive letter
+    - Clicking the key will open Windows Explorer to that drive
+- `Explorer Scratch Pad` now supports folders with non-ASCII characters such as `ä`,`æ`,`א` using the `Encoding Code Page` setting
+- `Multi-Clip` action now also supports fetching the current Clipboard contents (instead of the current highlighted text)
+- Fixed bug in `Multi-Clip` not fetching the right selected text
 
 ## New in v1.2
 - ***Stream Deck Mobile Support!***

@@ -185,7 +185,23 @@ namespace WinTools.Actions
 
         private void FetchDiskDrives()
         {
-            settings.DiskDrives = DriveInfo.GetDrives().Where(d => d.IsReady).Select(d => new DiskDrive(d)).ToList();
+            settings.DiskDrives = new List<DiskDrive>();
+            // Enclosed in try/catch as some drives cause exceptions
+            foreach (var drive in DriveInfo.GetDrives())
+            {
+                try
+                {
+                    if (drive.IsReady)
+                    {
+                        var diskDrive = new DiskDrive(drive);
+                        if (!String.IsNullOrEmpty(diskDrive.DisplayName) && !string.IsNullOrEmpty(diskDrive.Name))
+                        {
+                            settings.DiskDrives.Add(diskDrive);
+                        }
+                    }
+                }
+                catch { }
+            }
             SaveSettings();
         }
 

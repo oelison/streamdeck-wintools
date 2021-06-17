@@ -2,7 +2,6 @@
 using BarRaiderAudio;
 using BarRaiderAudio.Wrappers;
 using FontAwesome.Sharp;
-using NAudio.Mixer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

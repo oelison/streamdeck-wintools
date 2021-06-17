@@ -1,6 +1,5 @@
 ﻿using BarRaider.SdTools;
 using BarRaider.SdTools.Wrappers;
-using NAudio.Wave;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

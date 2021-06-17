@@ -290,7 +290,7 @@ namespace WinTools
                 return;
             }
 
-            if (e.Reply.Status == IPStatus.TimedOut || e.Reply.Status == IPStatus.DestinationHostUnreachable || e.Reply.Status == IPStatus.DestinationNetworkUnreachable)
+            if (e.Reply.Status == IPStatus.TimedOut || e.Reply.Status == IPStatus.DestinationHostUnreachable || e.Reply.Status == IPStatus.DestinationNetworkUnreachable || e.Reply.Status == IPStatus.TtlExpired)
             {
                 pingCanceled = true;
                 return;

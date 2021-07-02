@@ -264,11 +264,11 @@ namespace WinTools
 
                             if (String.IsNullOrWhiteSpace(settings.Encoding))
                             {
-                                return Uri.UnescapeDataString(uri.AbsolutePath);
+                                return Uri.UnescapeDataString(uri.AbsoluteUri.LocalPath);
                             }
 
                             Encoding e = Encoding.GetEncoding(settings.Encoding);
-                            return System.Web.HttpUtility.UrlDecode(uri.AbsolutePath, e);
+                            return System.Web.HttpUtility.UrlDecode(uri.AbsoluteUri.LocalPath, e);
                         }
                     }
                     catch (Exception ex)
@@ -314,7 +314,7 @@ namespace WinTools
                     {
                         // Save the location off to your application
                         Uri uri = new Uri(ie.LocationURL);
-                        string currentPath = Uri.UnescapeDataString(uri.AbsolutePath);
+                        string currentPath = Uri.UnescapeDataString(uri.AbsoluteUri.LocalPath);
                         if (currentPath.ToLowerInvariant() == explorerPath.ToLowerInvariant())
                         {
                             IntPtr destinationProcess = new IntPtr(ie.HWND);

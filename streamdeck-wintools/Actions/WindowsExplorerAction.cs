@@ -318,7 +318,7 @@ namespace WinTools
                         if (currentPath.ToLowerInvariant() == explorerPath.ToLowerInvariant())
                         {
                             IntPtr destinationProcess = new IntPtr(ie.HWND);
-                            if (SetForegroundWindow(destinationProcess))
+                            if (ShowWindow(destinationProcess, ShowWindowEnum.RESTORE) && SetForegroundWindow(destinationProcess))
                             {
                                 Logger.Instance.LogMessage(TracingLevel.INFO, $"Successfully set foreground window for Explorer with path {currentPath} HWND: {ie.HWND}");
                                 return true;

@@ -40,6 +40,13 @@ namespace WinTools
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, ShowWindowEnum nCmdShow);
+        
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
+
         private class PluginSettings
         {
             public static PluginSettings CreateDefaultSettings()
@@ -318,7 +325,7 @@ namespace WinTools
                         if (currentPath.ToLowerInvariant() == explorerPath.ToLowerInvariant())
                         {
                             IntPtr destinationProcess = new IntPtr(ie.HWND);
-                            if (ShowWindow(destinationProcess, ShowWindowEnum.RESTORE) && SetForegroundWindow(destinationProcess))
+                            if (BringWindowToForeground(destinationProcess))
                             {
                                 Logger.Instance.LogMessage(TracingLevel.INFO, $"Successfully set foreground window for Explorer with path {currentPath} HWND: {ie.HWND}");
                                 return true;
@@ -444,9 +451,21 @@ namespace WinTools
 
                 await AudioUtils.Common.PlaySound(settings.PlaySoundOnSetFile, settings.PlaybackDevice);
         }
-
-        [DllImport("user32.dll")]
-        public static extern bool ShowWindow(IntPtr hWnd, ShowWindowEnum nCmdShow);
+        
+        private bool BringWindowToForeground(IntPtr hWnd)
+        {
+            WindowPlacement placement = new WindowPlacement();
+            placement.Length = Marshal.SizeOf(placement);
+            if (!GetWindowPlacement(hWnd, ref placement))
+            {
+                return false;
+            }
+            if (placement.ShowCmd == ShowWindowEnum.SHOWMINIMIZED && !ShowWindow(hWnd, ShowWindowEnum.RESTORE))
+            {
+                return false;
+            }
+            return SetForegroundWindow(hWnd);
+        }
 
         private void MinimizeAndRestoreWindow(IntPtr hWnd)
         {

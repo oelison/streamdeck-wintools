@@ -1,4 +1,5 @@
 ﻿using BarRaider.SdTools;
+using BarRaiderVirtualDesktop.VirtualDesktop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,7 +8,6 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
-using VirtualDesktop;
 
 namespace WinTools.Actions
 {
@@ -65,7 +65,7 @@ namespace WinTools.Actions
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Pressed {this.GetType()}");
 
-            if (!WindowsHelpers.IsSupportedVirtualDesktopVersion())
+            if (!VirtualDesktopManager.Instance.IsSupportedVirtualDesktopVersion())
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Pressed but invalid Virtual Desktop Version");
                 await Connection.SetTitleAsync("Update\nWindows");
@@ -115,14 +115,14 @@ namespace WinTools.Actions
             try
             {
                 // Check if there already is a desktop with that name
-                int id = Desktop.SearchDesktop(settings.Name);
+                int id = VirtualDesktopManager.Instance.SearchDesktop(settings.Name);
                 if (id >= 0)
                 {
                     Logger.Instance.LogMessage(TracingLevel.INFO, $"Virtual desktop with name {settings.Name} already exists");
                     return true;
                 }
 
-                var newDesktop = Desktop.Create();
+                var newDesktop = VirtualDesktopManager.Instance.Create();
                 newDesktop.SetName(settings.Name);
 
                 return true;

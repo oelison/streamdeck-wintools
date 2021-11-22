@@ -1,4 +1,5 @@
 ﻿using BarRaider.SdTools;
+using BarRaiderVirtualDesktop.VirtualDesktop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VirtualDesktop;
 using WinTools.Wrappers;
 
 namespace WinTools.Actions
@@ -70,7 +70,7 @@ namespace WinTools.Actions
         public async override void KeyPressed(KeyPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Pressed {this.GetType()}");
-            if (!WindowsHelpers.IsSupportedVirtualDesktopVersion())
+            if (!VirtualDesktopManager.Instance.IsSupportedVirtualDesktopVersion())
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Pressed but invalid Virtual Desktop Version");
                 await Connection.SetTitleAsync("Update\nWindows");
@@ -120,15 +120,15 @@ namespace WinTools.Actions
             try
             {
                 // Check if there already is a desktop with that name
-                int id = Desktop.SearchDesktop(settings.Name);
+                int id = VirtualDesktopManager.Instance.SearchDesktop(settings.Name);
                 if (id < 0)
                 {
                     if (settings.CreateVirtualDesktop)
                     {
                         Logger.Instance.LogMessage(TracingLevel.INFO, $"Virtual desktop with name {settings.Name} does not exist, creating new one");
-                        var newDesktop = Desktop.Create();
+                        var newDesktop = VirtualDesktopManager.Instance.Create();
                         newDesktop.SetName(settings.Name);
-                        id = Desktop.SearchDesktop(settings.Name);
+                        id = VirtualDesktopManager.Instance.SearchDesktop(settings.Name);
                     }
                     else
                     {
@@ -137,7 +137,7 @@ namespace WinTools.Actions
                     }
                 }
 
-                var desktop = Desktop.FromIndex(id);
+                var desktop = VirtualDesktopManager.Instance.FromIndex(id);
                 desktop.MakeVisible();
 
                 return true;
@@ -151,7 +151,7 @@ namespace WinTools.Actions
 
         private void InitializeSettings()
         {
-            if (!WindowsHelpers.IsSupportedVirtualDesktopVersion())
+            if (!VirtualDesktopManager.Instance.IsSupportedVirtualDesktopVersion())
             {
                 Logger.Instance.LogMessage(TracingLevel.INFO, $"Invalid Virtual Desktop Version");
                 Connection.SetTitleAsync("Update\nWindows");
@@ -165,9 +165,9 @@ namespace WinTools.Actions
             settings.Desktops = new List<VirtualDesktopInfo>();
             try
             {
-                for (int currDesktop = 0; currDesktop < Desktop.Count; currDesktop++)
+                for (int currDesktop = 0; currDesktop < VirtualDesktopManager.Instance.Count(); currDesktop++)
                 {
-                    settings.Desktops.Add(new VirtualDesktopInfo() { Name = Desktop.DesktopNameFromIndex(currDesktop) });
+                    settings.Desktops.Add(new VirtualDesktopInfo() { Name = VirtualDesktopManager.Instance.DesktopNameFromIndex(currDesktop) });
                 }
             }
             catch (Exception ex)

@@ -1,6 +1,11 @@
 # Win Tools
 Advanced set of useful plugins for controlling Windows from the Stream Deck
 
+## New in v1.6
+What's New:
+- **Windows 11 Support** - All features (including Volume and Virtual Desktops) should now work on both Win10 and Win11.
+- Bug fixes and improvements
+
 ## New in v1.4
 - :new: `App Playback Device` action allows you to change the playback device of a specific application from the Stream Deck. Example: Click to move ONLY Spotify to go to your speakers, while the rest goes to your headset.
     - **Bonus:** Choosing the `Current Focused Window` option will change the playback device to whichever windows is in the foreground

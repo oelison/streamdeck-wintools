@@ -147,6 +147,21 @@
       "PropertyInspectorPath": "PropertyInspector/KeyboardLeds.html"
     },
     {
+      "Icon": "Images/noLockOff",
+      "Name": "Lock key with switch function",
+      "States": [
+        {
+          "Image": "Images/noLockOff",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Display and toggle the (Caps/Num/Scroll) Lock status from your keyboard",
+      "UUID": "com.barraider.wintools.keylock",
+      "PropertyInspectorPath": "PropertyInspector/KeyLock.html"
+    },
+    {
       "Icon": "Images/copyIcon",
       "Name": "Latest File Copy",
       "States": [

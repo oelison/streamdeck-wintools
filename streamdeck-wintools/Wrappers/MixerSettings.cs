@@ -14,11 +14,14 @@ namespace WinTools.Wrappers
 
         public bool ShowVolume { get; private set; }
 
-        public MixerSettings(int volumeStep, bool showName, bool showVolume)
+        public string[] FilteredApps { get; private set; }
+
+        public MixerSettings(int volumeStep, bool showName, bool showVolume, string[] filteredApps)
         {
             VolumeStep = volumeStep;
             ShowName = showName;
             ShowVolume = showVolume;
+            FilteredApps = filteredApps;
         }
     }
 }

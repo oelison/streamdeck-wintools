@@ -128,7 +128,7 @@ namespace WinTools.Backend
                 return false;
             }
 
-            await FetchAudioApplications();
+            await FetchAudioApplications(mixerSettings.FilteredApps);
 
             // Wait until the GameUI Action keys have subscribed to get events
             int retries = 0;
@@ -264,9 +264,14 @@ namespace WinTools.Backend
             UIManager.Instance.SendUIAction(action);
         }
 
-        private async Task FetchAudioApplications()
+        private async Task FetchAudioApplications(string[] filteredApps)
         {
-            audioApps = await BRAudio.GetVolumeApplications();
+            audioApps = (await BRAudio.GetVolumeApplications());
+            
+            if (filteredApps != null)
+            {
+                audioApps = audioApps.Where(a => filteredApps.All(f => a.Name.ToLowerInvariant() != f.ToLowerInvariant())).ToList();
+            }
         }
 
         private void DrawAppsRow()
@@ -448,7 +453,7 @@ namespace WinTools.Backend
             return Task.Run(async () =>
             {
                 await Task.Delay(100);
-                await FetchAudioApplications();
+                await FetchAudioApplications(mixerSettings?.FilteredApps);
                 DrawAppsRow();
             });
         }

@@ -31,7 +31,8 @@ namespace WinTools.Actions
                 {
                     VolumeStep = DEFAULT_VOLUME_STEP.ToString(),
                     ShowVolume = false,
-                    ShowAppName = false
+                    ShowAppName = false,
+                    FilteredApps = String.Empty
                 };
                 return instance;
             }
@@ -45,6 +46,8 @@ namespace WinTools.Actions
             [JsonProperty(PropertyName = "showAppName")]
             public bool ShowAppName { get; set; }
 
+            [JsonProperty(PropertyName = "filteredApps")]
+            public String FilteredApps { get; set; }
         }
 
         #region Private Members
@@ -100,7 +103,7 @@ namespace WinTools.Actions
                 await Connection.SwitchProfileAsync(profileName);
             }
 
-            await AudioMixerManager.Instance.ShowMixer(Connection, new MixerSettings(volumeStep, settings.ShowAppName, settings.ShowVolume));
+            await AudioMixerManager.Instance.ShowMixer(Connection, new MixerSettings(volumeStep, settings.ShowAppName, settings.ShowVolume, settings.FilteredApps?.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToArray())); ;
         }
 
         public override void KeyReleased(KeyPayload payload) { }

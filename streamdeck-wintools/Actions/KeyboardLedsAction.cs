@@ -209,7 +209,7 @@ namespace WinTools.Actions
                             continue;
                         }
 
-                        Color color = keysList[currKey].IsKeyLocked ? Color.Green : Color.White;
+                        Color color = keysList[currKey].IsKeyLocked ? Color.Green : Color.DarkGray;
                         graphics.DrawString(keysList[currKey].Key.ToString().Substring(0, 1), font, new SolidBrush(color), new PointF(startPos, KEY_POSITION_Y));
                     }
 

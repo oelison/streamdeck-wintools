@@ -29,8 +29,10 @@ namespace WinTools.Actions
         }
 
         #region Private Members
+        private const string DEFAULT_DESKTOP_NAME = "Desktop 1";
+
         private readonly PluginSettings settings;
-        bool featureSupported = false;
+        bool nameFeatureSupported = false;
 
         #endregion
 
@@ -66,17 +68,17 @@ namespace WinTools.Actions
 
         public async override void OnTick() 
         {
-            if (!featureSupported)
+            if (!nameFeatureSupported)
             {
                 return;
             }
 
-            string name = VirtualDesktopManager.Instance.CurrentDesktop().GetName();
-            if (String.IsNullOrEmpty(name))
+            string currentDesktopName = VirtualDesktopManager.Instance.CurrentDesktop().GetName();
+            if (String.IsNullOrEmpty(currentDesktopName))
             {
-                name = "Default";
+                currentDesktopName = DEFAULT_DESKTOP_NAME;
             }
-            await Connection.SetTitleAsync(name);
+            await Connection.SetTitleAsync(currentDesktopName);
         }
 
 
@@ -103,12 +105,12 @@ namespace WinTools.Actions
             {
                 Logger.Instance.LogMessage(TracingLevel.WARN, $"{this.GetType()} unsupported on this Virtual Desktop verison");
                 Connection.SetTitleAsync("Unsupported");
-                featureSupported = false;
+                nameFeatureSupported = false;
                 return;
             }
             else
             {
-                featureSupported = true;
+                nameFeatureSupported = true;
             }
         }
 

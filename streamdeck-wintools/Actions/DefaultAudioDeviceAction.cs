@@ -21,7 +21,8 @@ namespace WinTools.Actions
         private enum DeviceTypes
         {
             Playback = 0,
-            Recording = 1
+            Recording = 1,
+            Communication = 2
         }
 
         private class PluginSettings
@@ -32,7 +33,7 @@ namespace WinTools.Actions
                 {
                     DeviceType = DeviceTypes.Playback,
                     Devices = null,
-                    Device = String.Empty,
+                    Device = String.Empty
                 };
                 return instance;
             }
@@ -90,6 +91,10 @@ namespace WinTools.Actions
             if (settings.DeviceType == DeviceTypes.Playback)
             {
                 result = await BRAudio.SetDefaultPlaybackDeviceByDeviceFriendlyName(settings.Device);
+            }
+            else if (settings.DeviceType == DeviceTypes.Communication)
+            {
+                result = await BRAudio.SetDefaultCommunicationDeviceFriendlyName(settings.Device);
             }
             else // Recording Device
             {
@@ -181,7 +186,7 @@ namespace WinTools.Actions
 
         private void FetchDevices()
         {
-            if (settings.DeviceType == DeviceTypes.Playback)
+            if (settings.DeviceType == DeviceTypes.Playback || settings.DeviceType == DeviceTypes.Communication)
             {
                 FetchPlaybackDevices();
             }

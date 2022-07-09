@@ -49,8 +49,6 @@ namespace WinTools.Actions
 
         public DisplayAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
         {
-            Logger.Instance.LogMessage(TracingLevel.DEBUG, $"[{Thread.CurrentThread.ManagedThreadId}] DisplayAction loading");
-
             var deviceInfo = payload.DeviceInfo.Devices.Where(d => d.Id == connection.DeviceId).FirstOrDefault();
 
             sequentialKey = 0;
@@ -67,13 +65,11 @@ namespace WinTools.Actions
                 Logger.Instance.LogMessage(TracingLevel.ERROR, $"DisplayAction invalid ctor settings Device: {deviceInfo} Payload: {payload}");
             }
             UIManager.Instance.UIActionEvent += Instance_UIActionEvent;
-            Logger.Instance.LogMessage(TracingLevel.DEBUG, $"[{Thread.CurrentThread.ManagedThreadId}] DisplayAction up: {sequentialKey}");
         }
 
         #region Public Methods
         public override void Dispose()
         {
-            Logger.Instance.LogMessage(TracingLevel.DEBUG, $"[{Thread.CurrentThread.ManagedThreadId}] DisplayAction down: {sequentialKey}");
             UIManager.Instance.UIActionEvent -= Instance_UIActionEvent;
         }
 

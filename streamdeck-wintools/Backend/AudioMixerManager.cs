@@ -422,7 +422,7 @@ namespace WinTools.Backend
                     {
                         using (Bitmap fileIconAsBitmap = fileIcon.ToBitmap())
                         {
-                            Logger.Instance.LogMessage(TracingLevel.INFO, $"Bitmap size is: {fileIconAsBitmap.Width}x{fileIconAsBitmap.Height}");
+                            //Logger.Instance.LogMessage(TracingLevel.INFO, $"Bitmap size is: {fileIconAsBitmap.Width}x{fileIconAsBitmap.Height}");
                             fileImage = Tools.GenerateGenericKeyImage(out Graphics graphics);
 
                             // Check if app icon is smaller than the Stream Deck key

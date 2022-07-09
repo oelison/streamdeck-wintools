@@ -35,11 +35,19 @@ namespace WinTools.Actions
                     ShowVolume = false,
                     ShowAppName = false,
                     FadeVolume = false,
-                    FadeLength = DEFAULT_FADE_LENGTH_MS.ToString()
+                    FadeLength = DEFAULT_FADE_LENGTH_MS.ToString(),
+                    AppCurrent = false,
+                    AppSpecific = true
 
                 };
                 return instance;
             }
+
+            [JsonProperty(PropertyName = "appCurrent")]
+            public bool AppCurrent { get; set; }
+
+            [JsonProperty(PropertyName = "appSpecific")]
+            public bool AppSpecific { get; set; }
 
             [JsonProperty(PropertyName = "applications")]
             public List<AudioApplication> Applications { get; set; }
@@ -99,19 +107,25 @@ namespace WinTools.Actions
         public async override void KeyPressed(KeyPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"{GetType()} Key Pressed");
-            if (String.IsNullOrEmpty(settings.Application))
+            if (settings.AppSpecific && String.IsNullOrEmpty(settings.Application))
             {
                 Logger.Instance.LogMessage(TracingLevel.WARN, $"{GetType()} Key Pressed but no application is set");
                 return;
             }
 
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Setting {settings.Application}'s volume to {volume}");
+            string appName = settings.Application;
+            if (settings.AppCurrent)
+            {
+                appName = HelperUtils.GetForegroundWindowProcess().ProcessName;
+            }
+
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Setting {appName}'s volume to {volume}");
             int totalFadeLength = 0;
             if (settings.FadeVolume)
             {
                 totalFadeLength = fadeLength;
             }
-            if (await BRAudio.SetAppVolume(settings.Application, volume, totalFadeLength))
+            if (await BRAudio.SetAppVolume(appName, volume, totalFadeLength))
             {
                 await Connection.ShowOk();
             }
@@ -156,7 +170,7 @@ namespace WinTools.Actions
             InitializeSettings();
 
             // Clear title if setting changed
-            if (showTitle != (settings.ShowVolume || settings.ShowAppName))
+            if (settings.AppCurrent || showTitle != (settings.ShowVolume || settings.ShowAppName))
             {
                 Connection.SetTitleAsync((string)null);
             }
@@ -168,6 +182,16 @@ namespace WinTools.Actions
 
         private void InitializeSettings()
         {
+            if (!settings.AppSpecific && !settings.AppCurrent) // Backward compatibility
+            {
+                settings.AppSpecific = true;
+            }
+
+            if (settings.AppCurrent)
+            {
+                settings.ShowAppName = settings.ShowVolume = false;
+            }
+
             if (!Int32.TryParse(settings.Volume, out volume))
             {
                 settings.Volume = DEFAULT_VOLUME_LEVEL.ToString();

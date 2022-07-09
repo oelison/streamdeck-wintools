@@ -123,6 +123,7 @@
     <Compile Include="Backend\CacheManager.cs" />
     <Compile Include="Backend\ExtensionMethods.cs" />
     <Compile Include="Backend\ForceForegroundSettings.cs" />
+    <Compile Include="Backend\HelperUtils.cs" />
     <Compile Include="Backend\KeyboardManager.cs" />
     <Compile Include="Wrappers\DeviceEndpoint.cs" />
     <Compile Include="Wrappers\KeyStatus.cs" />

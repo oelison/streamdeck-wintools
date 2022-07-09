@@ -85,6 +85,30 @@
       "PropertyInspectorPath": "PropertyInspector/AppVolumeSet.html"
     },
     {
+      "Icon": "Images/bluetoothIcon",
+      "Name": "Bluetooth/Wifi Toggle",
+      "States": [
+        {
+          "Image": "Images/bluetoothAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12",
+          "Name": "Toggle"
+        },
+        {
+          "Name": "Enable",
+          "OnlyForMultiAction": true
+        },
+        {
+          "Name": "Disable",
+          "OnlyForMultiAction": true
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Turns your Bluetooth/Wifi on or off",
+      "UUID": "com.barraider.wintools.bluetooth",
+      "PropertyInspectorPath": "PropertyInspector/BluetoothToggle.html"
+    },
+    {
       "Icon": "Images/deviceDefaultIcon",
       "Name": "Default Audio Device",
       "States": [
@@ -360,7 +384,7 @@
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",
-  "Version": "1.6",
+  "Version": "1.6.1",
   "CodePath": "com.barraider.wintools",
   "Category": "Win Tools [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",

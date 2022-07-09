@@ -349,6 +349,21 @@
     },
     {
       "Icon": "Images/vdIcon",
+      "Name": "Virtual Desktop - Show current",
+      "States": [
+        {
+          "Image": "Images/vdShowAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows name of current Virtual Desktop",
+      "UUID": "com.barraider.wintools.vdshow"
+    },
+    {
+      "Icon": "Images/vdIcon",
       "Name": "Switch Virtual Desktop",
       "States": [
         {

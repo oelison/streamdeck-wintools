@@ -103,6 +103,7 @@
     <Compile Include="Actions\AppVolumeSetAction.cs" />
     <Compile Include="Actions\KeyboardLedsAction.cs" />
     <Compile Include="Actions\KeyboardLanguageAction.cs" />
+    <Compile Include="Actions\VirtualDesktopShowAction.cs" />
     <Compile Include="Actions\VirtualDesktopSwitchAction.cs" />
     <Compile Include="Actions\VirtualDesktopDeleteAction.cs" />
     <Compile Include="Actions\VirtualDesktopCreateAction.cs" />
@@ -418,6 +419,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\vdIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\vdShowAction%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\vdShowAction.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\vdSwitchAction%402x.png">

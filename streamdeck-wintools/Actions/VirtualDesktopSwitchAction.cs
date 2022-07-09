@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,7 +40,12 @@ namespace WinTools.Actions
         }
 
         #region Private Members
+        private const string DEFAULT_DESKTOP_NAME = "Desktop 1";
+        private const string ACTIVE_IMAGE_FILE = @"images\vdSwitchSelected.png";
+
         private readonly PluginSettings settings;
+        private bool nameFeatureSupported = false;
+        private Image prefetchedActiveImage;
 
         #endregion
 
@@ -90,7 +96,34 @@ namespace WinTools.Actions
 
         public override void KeyReleased(KeyPayload payload) { }
 
-        public override void OnTick() { }
+        public async override void OnTick()
+        {
+            if (!nameFeatureSupported)
+            {
+                return;
+            }
+
+            if (String.IsNullOrEmpty(settings.Name))
+            {
+                return;
+            }
+
+            string currentDesktopName = VirtualDesktopManager.Instance.CurrentDesktop().GetName();
+            if (String.IsNullOrEmpty(currentDesktopName))
+            {
+                currentDesktopName = DEFAULT_DESKTOP_NAME;
+            }
+
+            if (currentDesktopName == settings.Name)
+            {
+                await Connection.SetImageAsync(GetActiveDesktopImage());
+            }
+            else
+            {
+                await Connection.SetImageAsync((string)null);
+            }
+
+        }
 
         public override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
@@ -110,7 +143,7 @@ namespace WinTools.Actions
         }
 
         private bool SwitchVirtualDesktop()
-        { 
+        {
             if (String.IsNullOrEmpty(settings.Name))
             {
                 Logger.Instance.LogMessage(TracingLevel.WARN, $"SwitchVirtualDesktop: Desktop name is null!");
@@ -157,6 +190,8 @@ namespace WinTools.Actions
                 Connection.SetTitleAsync("Update\nWindows");
                 return;
             }
+
+            nameFeatureSupported =  VirtualDesktopManager.Instance.IsWin11Version();
             FetchAllVirtualDesktops();
         }
 
@@ -191,6 +226,15 @@ namespace WinTools.Actions
                         break;
                 }
             }
+        }
+
+        private Image GetActiveDesktopImage()
+        {
+            if (prefetchedActiveImage == null)
+            {
+                prefetchedActiveImage = Image.FromFile(ACTIVE_IMAGE_FILE);
+            }
+            return prefetchedActiveImage;
         }
 
         #endregion

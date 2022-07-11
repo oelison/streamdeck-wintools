@@ -429,7 +429,7 @@
     }
   ],
   "Author": "BarRaider",
-  "Description": "Advanced set of useful plugins for controlling Windows. Control the volume of your Windows apps from the Stream Deck, Use the 'Explorer Scratch Pad' to quickly cycle between common folders, 'Multi-Clip' turns every key to an individual clipboard, Ping servers and see latency, change power plans, Stop/Start/Restart Windows services and more...\n*** NEW *** Virtual Desktop support",
+  "Description": "Control Windows from the Stream Deck. Control the volume of apps or devices, Toggle Bluetooth/Wifi on or off, use the 'Explorer Scratch Pad' to quickly cycle between common folders, 'Multi-Clip' turns every key to an individual clipboard, Ping servers and see latency, change power plans, Stop/Start/Restart Windows services, Virtual Desktop support, and more",
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",

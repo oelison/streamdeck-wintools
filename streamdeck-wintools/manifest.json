@@ -51,11 +51,11 @@
       "PropertyInspectorPath": "PropertyInspector/AppPlayback.html"
     },
     {
-      "Icon": "Images/soundIcon",
+      "Icon": "Images/appSoundIcon",
       "Name": "App Volume Adjust",
       "States": [
         {
-          "Image": "Images/soundAction",
+          "Image": "Images/appSoundAction",
           "TitleAlignment": "middle",
           "FontSize": "18",
           "TitleColor": "Yellow"
@@ -68,11 +68,11 @@
       "PropertyInspectorPath": "PropertyInspector/AppVolumeAdjuster.html"
     },
     {
-      "Icon": "Images/soundIcon",
+      "Icon": "Images/appSoundIcon",
       "Name": "App Volume Set",
       "States": [
         {
-          "Image": "Images/soundAction",
+          "Image": "Images/appSoundAction",
           "TitleAlignment": "middle",
           "FontSize": "18",
           "TitleColor": "Yellow"
@@ -83,6 +83,40 @@
       "Tooltip": "Set (or fade) the volume of an application to a specific level",
       "UUID": "com.barraider.wintools.appvolumeset",
       "PropertyInspectorPath": "PropertyInspector/AppVolumeSet.html"
+    },
+    {
+      "Icon": "Images/soundIcon",
+      "Name": "Audio Device Volume Adjust",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "14",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Modify volume levels for a playback/recording device",
+      "UUID": "com.barraider.wintools.audiovolumeadjust",
+      "PropertyInspectorPath": "PropertyInspector/AudioDeviceVolumeAdjuster.html"
+    },
+    {
+      "Icon": "Images/soundIcon",
+      "Name": "Audio Device Volume Set",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "14",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Set (or fade) the volume of a playback/recording device to a specific level",
+      "UUID": "com.barraider.wintools.audiovolumeset",
+      "PropertyInspectorPath": "PropertyInspector/AudioDeviceVolumeSet.html"
     },
     {
       "Icon": "Images/bluetoothIcon",

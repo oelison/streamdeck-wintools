@@ -96,7 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\AppAudioMixerAction.cs" />
+    <Compile Include="Actions\AudioDeviceVolumeSetAction.cs" />
     <Compile Include="Actions\BluetoothToggleAction.cs" />
+    <Compile Include="Actions\AudioDeviceVolumeAdjusterAction.cs" />
     <Compile Include="Actions\DefaultAudioDeviceAction.cs" />
     <Compile Include="Actions\AppPlaybackDeviceAction.cs" />
     <Compile Include="Actions\AppVolumeAdjusterAction.cs" />
@@ -176,6 +178,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="brlogo.ico" />
+    <Content Include="Images\appSoundAction%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\appSoundAction.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\appSoundIcon%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\appSoundIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\bluetoothAction%402x.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -452,10 +466,19 @@
     <Content Include="PropertyInspector\AppAudioMixer.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="PropertyInspector\AudioDeviceVolumeSet.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PropertyInspector\AudioDeviceVolumeSet.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="PropertyInspector\BluetoothToggle.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PropertyInspector\BluetoothToggle.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PropertyInspector\AudioDeviceVolumeAdjuster.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PropertyInspector\DefaultAudioDevice.html">

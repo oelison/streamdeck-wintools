@@ -288,6 +288,21 @@
       "PropertyInspectorPath": "PropertyInspector/NetworkCard.html"
     },
     {
+      "Icon": "Images/notificationIcon",
+      "Name": "Notification Popup",
+      "States": [
+        {
+          "Image": "Images/notificationAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Pops up a custom notification",
+      "UUID": "com.barraider.wintools.notification",
+      "PropertyInspectorPath": "PropertyInspector/NotificationToast.html"
+    },
+    {
       "Icon": "Images/powerIcon",
       "Name": "Power Plan Switcher",
       "States": [

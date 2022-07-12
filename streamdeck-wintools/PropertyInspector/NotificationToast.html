@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>Virtual Desktop Create</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
+    <script src="NotificationToast.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <details class="message">
+            <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
+        </details>
+        <div class="sdpi-item" id="dvName">
+            <div class="sdpi-item-label">Title</div>
+            <input class="sdpi-item-value sdProperty" placeholder="My Title" value="" id="title" oninput="setSettings()">
+        </div>
+        <div type="checkbox" class="sdpi-item" id="dvspLoadFromFiles">
+            <div class="sdpi-item-label">Message</div>
+            <div class="sdpi-item-value">
+                <input id="messageFromFile" class="sdProperty sdCheckbox" type="checkbox" value="" oninput="setSettings()">
+                <label for="messageFromFile" class="sdpi-item-label"><span></span>Load message from file</label>
+            </div>
+        </div>
+        <div id="dvMessageFileArea" style="display:none">
+            <div class="sdpi-item" id="dvMessageFile">
+                <div class="sdpi-item-label">Message File</div>
+                <div class="sdpi-item-group file" id="filepickergroup">
+                    <input class="sdpi-item-value sdProperty sdFile" type="file" id="messageFile" accept=".txt" oninput="setSettings()">
+                    <label class="sdpi-file-info " for="messageFile" id="messageFileFilename">No file...</label>
+                    <label class="sdpi-file-label" for="messageFile">Choose file...</label>
+                </div>
+            </div>
+        </div>
+        <div id="dvMessageTextArea">
+            <div type="textarea" class="sdpi-item" id="dvMessageText">
+                <div class="sdpi-item-label">Message</div>
+                <span class="sdpi-item-value textarea">
+                    <textarea type="textarea" oninput="setSettings()" class="sdProperty" id="messageText" placeholder='This is a message'></textarea>
+                </span>
+            </div>
+        </div>
+        <div class="sdpi-item" id="dvImageFile">
+            <div class="sdpi-item-label">Custom Image</div>
+            <div class="sdpi-item-group file" id="filepickergroup">
+                <input class="sdpi-item-value sdProperty sdFile" type="file" id="imageFile" accept=".jpg, .jpeg, .png, .ico, .gif, .bmp, .tiff" oninput="setSettings()">
+                <label class="sdpi-file-info " for="imageFile" id="imageFileFilename">No file...</label>
+                <label class="sdpi-file-label" for="imageFile">Choose file...</label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

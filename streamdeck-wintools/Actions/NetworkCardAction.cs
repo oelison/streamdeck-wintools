@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -11,6 +12,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Devices.Radios;
 using WinTools.Wrappers;
 
 namespace WinTools
@@ -44,8 +46,10 @@ namespace WinTools
         }
 
         #region Private Members
+        private const string DISABLED_IMAGE_FILE = @"images\cloudDown.png";
 
         private readonly PluginSettings settings;
+        private Image prefetchedDisabledImage;
 
         #endregion
         public NetworkCardAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
@@ -91,6 +95,15 @@ namespace WinTools
 
             string name = string.IsNullOrEmpty(settings.NetworkCardTitle) ? nic.Name : settings.NetworkCardTitle;
             await Connection.SetTitleAsync($"{name}\n{nic.OperationalStatus}");
+
+            if (nic.OperationalStatus == OperationalStatus.Up)
+            {
+                await Connection.SetImageAsync((string)null);
+            }
+            else
+            {
+                await Connection.SetImageAsync(GetDisabledNetworkImage());
+            }
         }
 
         public override void ReceivedSettings(ReceivedSettingsPayload payload)
@@ -132,6 +145,15 @@ namespace WinTools
             {
                 Logger.Instance.LogMessage(TracingLevel.ERROR, $"GetAllNetworkAdapters Exception: {ex}");
             }
+        }
+
+        private Image GetDisabledNetworkImage()
+        {
+            if (prefetchedDisabledImage == null)
+            {
+                prefetchedDisabledImage = Image.FromFile(DISABLED_IMAGE_FILE);
+            }
+            return prefetchedDisabledImage;
         }
 
         #endregion

@@ -5,10 +5,9 @@
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
     <meta name=apple-mobile-web-app-capable content=yes>
     <meta name=apple-mobile-web-app-status-bar-style content=black>
-    <title>App Volume Adjuster Settings</title>
+    <title>Default Audio Device Settings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
-    <script src="AppVolumeAdjuster.js"></script>
 </head>
 <body>
     <div class="sdpi-wrapper">
@@ -19,17 +18,13 @@
             <div class="sdpi-item-label">Device Type</div>
             <select class="sdpi-item-value select sdProperty" id="deviceType" oninput="setSettings()">
                 <option value="0">Playback</option>
+                <option value="2">Communication</option>
                 <option value="1">Recording</option>
             </select>
         </div>
         <div class="sdpi-item" id="dvDefaultDevice">
             <div class="sdpi-item-label">Default Device</div>
             <select class="sdpi-item-value select sdProperty sdList" id="devices" oninput="setSettings()" sdListTextProperty="name" sdListValueProperty="name" sdValueField="device"></select>
-        </div>
-        <hr />
-        <div class="sdpi-item" id="dvRefresh">
-            <div class="sdpi-item-label">Refresh</div>
-            <button class="sdpi-item-value" onclick="refreshApplications()">Refresh Settings</button>
         </div>
     </div>
 </body>

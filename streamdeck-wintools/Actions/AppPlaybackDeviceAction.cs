@@ -115,7 +115,7 @@ namespace WinTools.Actions
 
             if (settings.AppCurrent)
             {
-                Process proc = GetForegroundWindowProcess();
+                Process proc = HelperUtils.GetForegroundWindowProcess();
                 if (proc == null)
                 {
                     Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} GetForegroundWindowProcess() returned null!");
@@ -265,30 +265,6 @@ namespace WinTools.Actions
         {
             FetchApplicationsAndDevices();
         }
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        private Process GetForegroundWindowProcess()
-        {
-            try
-            {
-                uint processID = 0;
-                IntPtr hWnd = GetForegroundWindow(); // Get foreground window handle
-                uint threadID = GetWindowThreadProcessId(hWnd, out processID); // Get PID from window handle
-                return Process.GetProcessById(Convert.ToInt32(processID)); // Get it as a C# obj.
-            }
-            catch (Exception ex)
-            {
-
-                Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} GetForegroundWindowProcess Exception: {ex}");
-            }
-            return null;
-        }
-
 
         #endregion
     }

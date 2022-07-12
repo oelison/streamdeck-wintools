@@ -51,11 +51,11 @@
       "PropertyInspectorPath": "PropertyInspector/AppPlayback.html"
     },
     {
-      "Icon": "Images/soundIcon",
+      "Icon": "Images/appSoundIcon",
       "Name": "App Volume Adjust",
       "States": [
         {
-          "Image": "Images/soundAction",
+          "Image": "Images/appSoundAction",
           "TitleAlignment": "middle",
           "FontSize": "18",
           "TitleColor": "Yellow"
@@ -68,11 +68,11 @@
       "PropertyInspectorPath": "PropertyInspector/AppVolumeAdjuster.html"
     },
     {
-      "Icon": "Images/soundIcon",
+      "Icon": "Images/appSoundIcon",
       "Name": "App Volume Set",
       "States": [
         {
-          "Image": "Images/soundAction",
+          "Image": "Images/appSoundAction",
           "TitleAlignment": "middle",
           "FontSize": "18",
           "TitleColor": "Yellow"
@@ -83,6 +83,64 @@
       "Tooltip": "Set (or fade) the volume of an application to a specific level",
       "UUID": "com.barraider.wintools.appvolumeset",
       "PropertyInspectorPath": "PropertyInspector/AppVolumeSet.html"
+    },
+    {
+      "Icon": "Images/soundIcon",
+      "Name": "Audio Device Volume Adjust",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "14",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Modify volume levels for a playback/recording device",
+      "UUID": "com.barraider.wintools.audiovolumeadjust",
+      "PropertyInspectorPath": "PropertyInspector/AudioDeviceVolumeAdjuster.html"
+    },
+    {
+      "Icon": "Images/soundIcon",
+      "Name": "Audio Device Volume Set",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "14",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Set (or fade) the volume of a playback/recording device to a specific level",
+      "UUID": "com.barraider.wintools.audiovolumeset",
+      "PropertyInspectorPath": "PropertyInspector/AudioDeviceVolumeSet.html"
+    },
+    {
+      "Icon": "Images/bluetoothIcon",
+      "Name": "Bluetooth/Wifi Toggle",
+      "States": [
+        {
+          "Image": "Images/bluetoothAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12",
+          "Name": "Toggle"
+        },
+        {
+          "Name": "Enable",
+          "OnlyForMultiAction": true
+        },
+        {
+          "Name": "Disable",
+          "OnlyForMultiAction": true
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Turns your Bluetooth/Wifi on or off",
+      "UUID": "com.barraider.wintools.bluetooth",
+      "PropertyInspectorPath": "PropertyInspector/BluetoothToggle.html"
     },
     {
       "Icon": "Images/deviceDefaultIcon",
@@ -114,6 +172,21 @@
       "Tooltip": "Shows information about your disk drives",
       "UUID": "com.barraider.wintools.driveinfo",
       "PropertyInspectorPath": "PropertyInspector/DriveInfo.html"
+    },
+    {
+      "Icon": "Images/cloudIcon",
+      "Name": "IP Info",
+      "States": [
+        {
+          "Image": "Images/cloudAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows your current ip",
+      "UUID": "com.barraider.wintools.ip",
+      "PropertyInspectorPath": "PropertyInspector/IP.html"
     },
     {
       "Icon": "Images/keyIcon",
@@ -209,10 +282,25 @@
           "FontSize": "12"
         }
       ],
-      "SupportedInMultiActions": true,
+      "SupportedInMultiActions": false,
       "Tooltip": "Shows if your network card is enabled/disabled (useful to check if VPN is enabled)",
       "UUID": "com.barraider.wintools.networkcard",
       "PropertyInspectorPath": "PropertyInspector/NetworkCard.html"
+    },
+    {
+      "Icon": "Images/notificationIcon",
+      "Name": "Notification Popup",
+      "States": [
+        {
+          "Image": "Images/notificationAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Pops up a custom notification",
+      "UUID": "com.barraider.wintools.notification",
+      "PropertyInspectorPath": "PropertyInspector/NotificationToast.html"
     },
     {
       "Icon": "Images/powerIcon",
@@ -325,6 +413,21 @@
     },
     {
       "Icon": "Images/vdIcon",
+      "Name": "Virtual Desktop - Show current",
+      "States": [
+        {
+          "Image": "Images/vdShowAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows name of current Virtual Desktop",
+      "UUID": "com.barraider.wintools.vdshow"
+    },
+    {
+      "Icon": "Images/vdIcon",
       "Name": "Switch Virtual Desktop",
       "States": [
         {
@@ -356,11 +459,11 @@
     }
   ],
   "Author": "BarRaider",
-  "Description": "Advanced set of useful plugins for controlling Windows. Control the volume of your Windows apps from the Stream Deck, Use the 'Explorer Scratch Pad' to quickly cycle between common folders, 'Multi-Clip' turns every key to an individual clipboard, Ping servers and see latency, change power plans, Stop/Start/Restart Windows services and more...\n*** NEW *** Virtual Desktop support",
+  "Description": "Control Windows from the Stream Deck. Control the volume of apps or devices, Toggle Bluetooth/Wifi on or off, use the 'Explorer Scratch Pad' to quickly cycle between common folders, 'Multi-Clip' turns every key to an individual clipboard, Ping servers and see latency, change power plans, Stop/Start/Restart Windows services, Virtual Desktop support, and more",
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",
-  "Version": "1.6",
+  "Version": "1.6.1",
   "CodePath": "com.barraider.wintools",
   "Category": "Win Tools [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",

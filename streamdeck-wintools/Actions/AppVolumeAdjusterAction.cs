@@ -182,6 +182,7 @@ namespace WinTools.Actions
             if (!Int32.TryParse(settings.VolumeStep, out volumeStep))
             {
                 settings.VolumeStep = DEFAULT_VOLUME_STEP.ToString();
+                volumeStep = DEFAULT_VOLUME_STEP;
             }
             SaveSettings();
         }

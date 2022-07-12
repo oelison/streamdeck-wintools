@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>IP Info Settings</title>
+    <link rel="stylesheet" href="Resources/sdpi.css">
+    <script src="Resources/sdtools.common.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/pickers.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <details class="message">
+            <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
+        </details>
+        <div class="sdpi-item" id="dvProvider">
+            <div class="sdpi-item-label">Provider</div>
+            <select class="sdpi-item-value select sdProperty" id="provider" oninput="setSettings()">
+                <option value="https://api.ipify.org/?format=json" selected>Ipify.com</option>
+                <option value="https://api.myip.com/">Myip.com</option>
+                <option value="https://api.my-ip.io/ip.json">My-ip.io</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="dvRefresh">
+            <div class="sdpi-item-label">Refresh time (seconds)</div>
+            <input class="sdpi-item-value sdProperty" id="refreshSeconds" style="width:50%;" inputmode="numeric" pattern="[0-9]*" type="number" placeholder="60" oninput="setSettings()">
+        </div>
+        <div class="sdpi-item" id="dvSaveFileName">
+            <div class="sdpi-item-label">Save To File</div>
+            <input class="sdpi-item-value sdProperty hasFileButton" disabled value="" id="saveFilePath">
+            <button class="max100 leftMargin0" onclick="openSaveFilePicker('Save ip to file','Text files (*.txt)|*.txt|All files (*.*)|*.*','saveFilePath')">...</button>
+        </div>
+    </div>
+    </div>
+</body>
+</html>

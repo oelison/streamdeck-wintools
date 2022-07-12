@@ -174,6 +174,21 @@
       "PropertyInspectorPath": "PropertyInspector/DriveInfo.html"
     },
     {
+      "Icon": "Images/cloudIcon",
+      "Name": "IP Info",
+      "States": [
+        {
+          "Image": "Images/cloudAction",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shows your current ip",
+      "UUID": "com.barraider.wintools.ip",
+      "PropertyInspectorPath": "PropertyInspector/IP.html"
+    },
+    {
       "Icon": "Images/keyIcon",
       "Name": "Keyboard Language",
       "States": [
@@ -267,7 +282,7 @@
           "FontSize": "12"
         }
       ],
-      "SupportedInMultiActions": true,
+      "SupportedInMultiActions": false,
       "Tooltip": "Shows if your network card is enabled/disabled (useful to check if VPN is enabled)",
       "UUID": "com.barraider.wintools.networkcard",
       "PropertyInspectorPath": "PropertyInspector/NetworkCard.html"

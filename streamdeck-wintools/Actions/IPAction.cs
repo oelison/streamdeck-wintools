@@ -25,11 +25,6 @@ namespace WinTools
     [PluginActionId("com.barraider.wintools.ip")]
     public class IPAction : PluginBase
     {
-
-        //---------------------------------------------------
-        //          BarRaider's Hall Of Fame
-        // 9000 Bits: nubby_ninja
-        //---------------------------------------------------
         private class PluginSettings
         {
             public static PluginSettings CreateDefaultSettings()

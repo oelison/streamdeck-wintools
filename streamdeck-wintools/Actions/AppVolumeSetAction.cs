@@ -140,24 +140,34 @@ namespace WinTools.Actions
         public async override void OnTick() 
         {
             string title = String.Empty;
-            if (String.IsNullOrEmpty(settings.Application) || (!settings.ShowVolume && !settings.ShowAppName))
+            if ((settings.AppSpecific && String.IsNullOrEmpty(settings.Application))
+                || (!settings.ShowVolume && !settings.ShowAppName))
             {
+                return;
+            }
+
+            string appName = settings.Application;
+            if (settings.AppCurrent)
+            {
+                appName = HelperUtils.GetForegroundWindowProcess().ProcessName;
+            }
+
+            var appInfo = (await BRAudio.GetVolumeApplications()).Where(app => app.Name == appName).FirstOrDefault();
+            if (appInfo == null)
+            {
+                await Connection.SetTitleAsync(null);
                 return;
             }
 
             if (settings.ShowAppName)
             {
-                title = settings.Application;
+                title = appName;
             }
 
             if (settings.ShowVolume)
             {
-                var appInfo = (await BRAudio.GetVolumeApplications()).Where(app => app.Name == settings.Application).FirstOrDefault();
-                if (appInfo != null)
-                {
-                    // Append volume on new line if app name is also selected
-                    title = title + (String.IsNullOrEmpty(title) ? "" : "\n") + Math.Round(appInfo.Volume * 100).ToString();
-                }
+                // Append volume on new line if app name is also selected
+                title = title + (String.IsNullOrEmpty(title) ? "" : "\n\n") + Math.Round(appInfo.Volume * 100).ToString();
             }
 
             await Connection.SetTitleAsync(title);
@@ -185,11 +195,6 @@ namespace WinTools.Actions
             if (!settings.AppSpecific && !settings.AppCurrent) // Backward compatibility
             {
                 settings.AppSpecific = true;
-            }
-
-            if (settings.AppCurrent)
-            {
-                settings.ShowAppName = settings.ShowVolume = false;
             }
 
             if (!Int32.TryParse(settings.Volume, out volume))

@@ -18,13 +18,19 @@
             <div class="sdpi-item-label">Device Type</div>
             <select class="sdpi-item-value select sdProperty" id="deviceType" oninput="setSettings()">
                 <option value="0">Playback</option>
-                <option value="2">Communication</option>
                 <option value="1">Recording</option>
             </select>
         </div>
         <div class="sdpi-item" id="dvDefaultDevice">
             <div class="sdpi-item-label">Default Device</div>
             <select class="sdpi-item-value select sdProperty sdList" id="devices" oninput="setSettings()" sdListTextProperty="name" sdListValueProperty="name" sdValueField="device"></select>
+        </div>
+        <div type="checkbox" class="sdpi-item" id="dvShowVolume">
+            <div class="sdpi-item-label">Communication</div>
+            <div class="sdpi-item-value">
+                <input id="commDevice" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
+                <label for="commDevice" class="sdpi-item-label"><span></span>Set as default Communication Device</label>
+            </div>
         </div>
     </div>
 </body>

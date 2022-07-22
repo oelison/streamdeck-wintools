@@ -21,8 +21,7 @@ namespace WinTools.Actions
         private enum DeviceTypes
         {
             Playback = 0,
-            Recording = 1,
-            Communication = 2
+            Recording = 1
         }
 
         private class PluginSettings
@@ -33,7 +32,8 @@ namespace WinTools.Actions
                 {
                     DeviceType = DeviceTypes.Playback,
                     Devices = null,
-                    Device = String.Empty
+                    Device = String.Empty,
+                    SetDefaultCommunication = false
                 };
                 return instance;
             }
@@ -46,6 +46,9 @@ namespace WinTools.Actions
 
             [JsonProperty(PropertyName = "device")]
             public String Device { get; set; }
+
+            [JsonProperty(PropertyName = "commDevice")]
+            public bool SetDefaultCommunication { get; set; }
         }
 
         #region Private Members
@@ -91,14 +94,18 @@ namespace WinTools.Actions
             if (settings.DeviceType == DeviceTypes.Playback)
             {
                 result = await BRAudio.SetDefaultPlaybackDeviceByDeviceFriendlyName(settings.Device);
-            }
-            else if (settings.DeviceType == DeviceTypes.Communication)
-            {
-                result = await BRAudio.SetDefaultCommunicationDeviceFriendlyName(settings.Device);
+                if (result && settings.SetDefaultCommunication)
+                {
+                    result = await BRAudio.SetDefaultPlaybackCommunicationDeviceFriendlyName(settings.Device);
+                }
             }
             else // Recording Device
             {
                 result = await BRAudio.SetDefaultRecordingDeviceByDeviceFriendlyName(settings.Device);
+                if (result && settings.SetDefaultCommunication)
+                {
+                    result = await BRAudio.SetDefaultRecordingCommunicationDeviceFriendlyName(settings.Device);
+                }
             }
             
             if (result)
@@ -186,7 +193,7 @@ namespace WinTools.Actions
 
         private void FetchDevices()
         {
-            if (settings.DeviceType == DeviceTypes.Playback || settings.DeviceType == DeviceTypes.Communication)
+            if (settings.DeviceType == DeviceTypes.Playback)
             {
                 FetchPlaybackDevices();
             }

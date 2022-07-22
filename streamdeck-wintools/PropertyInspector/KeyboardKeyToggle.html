@@ -15,17 +15,13 @@
             <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
         </details>
         <div class="sdpi-item" id="dvKeyPress">
-            <div class="sdpi-item-label">Key Press</div>
-            <select class="sdpi-item-value select sdProperty" id="keyPress" oninput="setSettings()">
-                <option value="0">- Unset -</option>
-                <option value="1">Lock/Unlock Current State</option>
+            <div class="sdpi-item-label">Key</div>
+            <select class="sdpi-item-value select sdProperty" id="keyType" oninput="setSettings()">
+                <option value="0">Caps Lock</option>
+                <option value="1">Num Lock</option>
+                <option value="2">Scroll Lock</option>
             </select>
         </div>
-        <details class="message">
-            <summary>Lock Current State will prevent changing the current state of the Caps/Num/Scroll-lock keys</summary>
-        </details>
-        <hr/>
-        <p class="summaryIconPadding"><b>Legend:&nbsp;</b> C - CapsLock, N - NumLock, S - ScrollLock</p>
     </div>
 
 </body>

@@ -249,9 +249,26 @@
       ],
       "SupportedInMultiActions": false,
       "DisableCaching": true,
-      "Tooltip": "Displays and changes the NumLock, CapsLock and ScrollLock status",
+      "Tooltip": "Displays and locks the NumLock, CapsLock and ScrollLock status",
       "UUID": "com.barraider.wintools.keyboardleds",
       "PropertyInspectorPath": "PropertyInspector/KeyboardLeds.html"
+    },
+    {
+      "Icon": "Images/keyLockIcon",
+      "Name": "Keyboard Caps/Num/Scroll Toggle",
+      "States": [
+        {
+          "Image": "Images/keyLockAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "15",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "DisableCaching": true,
+      "Tooltip": "Displays and changes an individual NumLock/CapsLock/ScrollLock status",
+      "UUID": "com.barraider.wintools.keyboardkeytoggle",
+      "PropertyInspectorPath": "PropertyInspector/KeyboardKeyToggle.html"
     },
     {
       "Icon": "Images/copyIcon",
@@ -497,7 +514,7 @@
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",
-  "Version": "1.6.1",
+  "Version": "1.6.2",
   "CodePath": "com.barraider.wintools",
   "Category": "Win Tools [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",

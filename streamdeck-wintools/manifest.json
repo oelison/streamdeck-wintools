@@ -52,13 +52,30 @@
     },
     {
       "Icon": "Images/appSoundIcon",
+      "Name": "App Mute Toggle",
+      "States": [
+        {
+          "Image": "Images/appSoundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "DisableCaching": true,
+      "Tooltip": "Mutes/Unmutes a specific application",
+      "UUID": "com.barraider.wintools.appmute",
+      "PropertyInspectorPath": "PropertyInspector/AppMuteToggle.html"
+    },
+    {
+      "Icon": "Images/appSoundIcon",
       "Name": "App Volume Adjust",
       "States": [
         {
           "Image": "Images/appSoundAction",
-          "TitleAlignment": "middle",
-          "FontSize": "18",
-          "TitleColor": "Yellow"
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
 
         }
       ],
@@ -73,9 +90,9 @@
       "States": [
         {
           "Image": "Images/appSoundAction",
-          "TitleAlignment": "middle",
-          "FontSize": "18",
-          "TitleColor": "Yellow"
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
 
         }
       ],
@@ -86,13 +103,30 @@
     },
     {
       "Icon": "Images/soundIcon",
+      "Name": "Audio Device Mute Toggle",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "DisableCaching": true,
+      "Tooltip": "Mutes/Unmutes a specific application",
+      "UUID": "com.barraider.wintools.audiomute",
+      "PropertyInspectorPath": "PropertyInspector/AudioDeviceMuteToggle.html"
+    },
+    {
+      "Icon": "Images/soundIcon",
       "Name": "Audio Device Volume Adjust",
       "States": [
         {
           "Image": "Images/soundAction",
           "TitleAlignment": "bottom",
-          "FontSize": "14",
-          "TitleColor": "Yellow"
+          "FontSize": "11",
+          "TitleColor": "White"
 
         }
       ],
@@ -108,8 +142,8 @@
         {
           "Image": "Images/soundAction",
           "TitleAlignment": "bottom",
-          "FontSize": "14",
-          "TitleColor": "Yellow"
+          "FontSize": "11",
+          "TitleColor": "White"
 
         }
       ],

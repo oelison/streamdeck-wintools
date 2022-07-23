@@ -103,7 +103,7 @@
     },
     {
       "Icon": "Images/soundIcon",
-      "Name": "Audio Device Mute Toggle",
+      "Name": "Audio Device/Mic Mute Toggle",
       "States": [
         {
           "Image": "Images/soundAction",
@@ -298,23 +298,6 @@
       "SupportedInMultiActions": true,
       "Tooltip": "Locks your computer",
       "UUID": "com.barraider.wintools.lock"
-    },
-    {
-      "Icon": "Images/soundIcon",
-      "Name": "Mic Mute Toggle",
-      "States": [
-        {
-          "Image": "Images/soundAction",
-          "TitleAlignment": "bottom",
-          "FontSize": "11",
-          "TitleColor": "White"
-        }
-      ],
-      "SupportedInMultiActions": true,
-      "DisableCaching": true,
-      "Tooltip": "Mutes/Unmutes your mic",
-      "UUID": "com.barraider.wintools.audiomute",
-      "PropertyInspectorPath": "PropertyInspector/AudioDeviceMuteToggle.html"
     },
     {
       "Icon": "Images/multiClipIcon",

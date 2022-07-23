@@ -1,4 +1,5 @@
 ﻿using BarRaider.SdTools;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,6 +34,5 @@ namespace WinTools.Backend
             }
             return null;
         }
-
     }
 }

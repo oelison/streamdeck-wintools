@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29306.81
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTools", "streamdeck-wintools\WinTools.csproj", "{4635D874-69C0-4010-BE46-77EF92EB1553}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTools", "streamdeck-wintools\WinTools.csproj", "{EB27B077-C858-4083-8328-EB39D74A6029}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinToolsRunner", "WinToolsRunner\WinToolsRunner.csproj", "{C51B36AE-6024-4856-8D5F-A4FC5A545C1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarRaiderAudio", "..\..\DotNet\StreamDeck\BarRaiderAudio\BarRaiderAudio.csproj", "{6EA4466D-EF70-45DC-9878-A3C83DA65DAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarRaiderVirtualDesktop", "..\..\DotNet\StreamDeck\BarRaiderVirtualDesktop\BarRaiderVirtualDesktop.csproj", "{ECEE3065-57BA-475B-B709-2E8FD35AE2E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4635D874-69C0-4010-BE46-77EF92EB1553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4635D874-69C0-4010-BE46-77EF92EB1553}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4635D874-69C0-4010-BE46-77EF92EB1553}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4635D874-69C0-4010-BE46-77EF92EB1553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB27B077-C858-4083-8328-EB39D74A6029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB27B077-C858-4083-8328-EB39D74A6029}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB27B077-C858-4083-8328-EB39D74A6029}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB27B077-C858-4083-8328-EB39D74A6029}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C51B36AE-6024-4856-8D5F-A4FC5A545C1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C51B36AE-6024-4856-8D5F-A4FC5A545C1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C51B36AE-6024-4856-8D5F-A4FC5A545C1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C51B36AE-6024-4856-8D5F-A4FC5A545C1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EA4466D-EF70-45DC-9878-A3C83DA65DAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EA4466D-EF70-45DC-9878-A3C83DA65DAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EA4466D-EF70-45DC-9878-A3C83DA65DAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EA4466D-EF70-45DC-9878-A3C83DA65DAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECEE3065-57BA-475B-B709-2E8FD35AE2E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECEE3065-57BA-475B-B709-2E8FD35AE2E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECEE3065-57BA-475B-B709-2E8FD35AE2E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECEE3065-57BA-475B-B709-2E8FD35AE2E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

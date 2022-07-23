@@ -78,7 +78,7 @@ namespace WinTools.Actions
             Logger.Instance.LogMessage(TracingLevel.INFO, $"{this.GetType()} Destructor called");
         }
 
-        public async override void KeyPressed(KeyPayload payload)
+        public override void KeyPressed(KeyPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Key Pressed {this.GetType()} - Changing state for key: {settings.Key}");
             KeyboardManager.Instance.ToggleLockKeyPress(KeyTypeToKey(settings.Key));

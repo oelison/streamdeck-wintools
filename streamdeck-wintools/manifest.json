@@ -52,13 +52,30 @@
     },
     {
       "Icon": "Images/appSoundIcon",
+      "Name": "App Mute Toggle",
+      "States": [
+        {
+          "Image": "Images/appSoundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "DisableCaching": true,
+      "Tooltip": "Mutes/Unmutes a specific application",
+      "UUID": "com.barraider.wintools.appmute",
+      "PropertyInspectorPath": "PropertyInspector/AppMuteToggle.html"
+    },
+    {
+      "Icon": "Images/appSoundIcon",
       "Name": "App Volume Adjust",
       "States": [
         {
           "Image": "Images/appSoundAction",
-          "TitleAlignment": "middle",
-          "FontSize": "18",
-          "TitleColor": "Yellow"
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
 
         }
       ],
@@ -73,9 +90,9 @@
       "States": [
         {
           "Image": "Images/appSoundAction",
-          "TitleAlignment": "middle",
-          "FontSize": "18",
-          "TitleColor": "Yellow"
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
 
         }
       ],
@@ -86,13 +103,30 @@
     },
     {
       "Icon": "Images/soundIcon",
+      "Name": "Audio Device/Mic Mute Toggle",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "DisableCaching": true,
+      "Tooltip": "Mutes/Unmutes a playback/recording device",
+      "UUID": "com.barraider.wintools.audiomute",
+      "PropertyInspectorPath": "PropertyInspector/AudioDeviceMuteToggle.html"
+    },
+    {
+      "Icon": "Images/soundIcon",
       "Name": "Audio Device Volume Adjust",
       "States": [
         {
           "Image": "Images/soundAction",
           "TitleAlignment": "bottom",
-          "FontSize": "14",
-          "TitleColor": "Yellow"
+          "FontSize": "11",
+          "TitleColor": "White"
 
         }
       ],
@@ -108,8 +142,8 @@
         {
           "Image": "Images/soundAction",
           "TitleAlignment": "bottom",
-          "FontSize": "14",
-          "TitleColor": "Yellow"
+          "FontSize": "11",
+          "TitleColor": "White"
 
         }
       ],
@@ -215,9 +249,26 @@
       ],
       "SupportedInMultiActions": false,
       "DisableCaching": true,
-      "Tooltip": "Displays and changes the NumLock, CapsLock and ScrollLock status",
+      "Tooltip": "Displays and locks the NumLock, CapsLock and ScrollLock status",
       "UUID": "com.barraider.wintools.keyboardleds",
       "PropertyInspectorPath": "PropertyInspector/KeyboardLeds.html"
+    },
+    {
+      "Icon": "Images/keyLockIcon",
+      "Name": "Keyboard Caps/Num/Scroll Toggle",
+      "States": [
+        {
+          "Image": "Images/keyLockAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "15",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "DisableCaching": true,
+      "Tooltip": "Displays and changes an individual NumLock/CapsLock/ScrollLock status",
+      "UUID": "com.barraider.wintools.keyboardkeytoggle",
+      "PropertyInspectorPath": "PropertyInspector/KeyboardKeyToggle.html"
     },
     {
       "Icon": "Images/copyIcon",
@@ -354,7 +405,7 @@
       "Name": "Service Start/Stop",
       "States": [
         {
-          "Image": "Images/pluginAction",
+          "Image": "Images/serviceAction",
           "TitleAlignment": "middle",
           "FontSize": "12"
         }
@@ -463,7 +514,7 @@
   "Name": "Win Tools",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.com/",
-  "Version": "1.6.1",
+  "Version": "1.6.2",
   "CodePath": "com.barraider.wintools",
   "Category": "Win Tools [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",

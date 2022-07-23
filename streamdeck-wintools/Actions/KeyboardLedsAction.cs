@@ -175,7 +175,7 @@ namespace WinTools.Actions
             const int KEY_PADDING_X = 15;
             const int KEY_TEXT_SIZE_INCREASE = 5;
             const int ICON_SIZE_PIXELS = 55;
-            
+
 
             using (Bitmap bmp = Tools.GenerateGenericKeyImage(out Graphics graphics))
             {
@@ -192,7 +192,7 @@ namespace WinTools.Actions
                 {
                     using (Bitmap icon = FormsIconHelper.ToBitmap(IconChar.Lock, Color.Red, ICON_SIZE_PIXELS))
                     {
-                        graphics.DrawImage(icon, new PointF(width / 2 - ICON_SIZE_PIXELS / 2 , (int)height - ICON_SIZE_PIXELS));
+                        graphics.DrawImage(icon, new PointF(width / 2 - ICON_SIZE_PIXELS / 2, (int)height - ICON_SIZE_PIXELS));
                     }
                 }
 
@@ -245,8 +245,7 @@ namespace WinTools.Actions
                     {
                         lockChangeMade = true;
                         Logger.Instance.LogMessage(TracingLevel.INFO, $"{this.GetType()} Found change in key {key.Key}, changing status back");
-
-                        ToggleLockKeyPress(key.Key);
+                        KeyboardManager.Instance.ToggleLockKeyPress(key.Key);
                     }
                 }
 
@@ -257,37 +256,6 @@ namespace WinTools.Actions
                 Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} HandleLockMode Exception : {ex}");
                 return false;
             }
-        }
-
-        [DllImport("user32.dll")]
-        static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
-        private void ToggleLockKeyPress(System.Windows.Forms.Keys key)
-        {
-            const int KEYEVENTF_EXTENDEDKEY = 0x1;
-            const int KEYEVENTF_KEYUP = 0x2;
-            const byte CAPSLOCK = 0x14;
-            const byte NUMLOCK = 0x90;
-            const byte SCROLLLOCK = 0x91;
-
-            byte lockKey;
-            switch (key)
-            {
-                case System.Windows.Forms.Keys.CapsLock:
-                    lockKey = CAPSLOCK;
-                    break;
-                case System.Windows.Forms.Keys.NumLock:
-                    lockKey = NUMLOCK;
-                    break;
-                case System.Windows.Forms.Keys.Scroll:
-                    lockKey = SCROLLLOCK;
-                    break;
-                default:
-                    Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} ToggleLockKeyPress: Unsupported key {key}");
-                    return;
-            }
-
-            keybd_event(lockKey, 0x45, KEYEVENTF_EXTENDEDKEY, (UIntPtr)0);
-            keybd_event(lockKey, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, (UIntPtr)0);
         }
     }
 

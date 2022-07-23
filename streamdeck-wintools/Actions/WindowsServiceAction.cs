@@ -3,22 +3,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WinTools.Backend;
 using WinTools.Wrappers;
 
 namespace WinTools
 {
-    public enum ServiceActionEnum
-    {
-        Restart = 0,
-        Start = 1,
-        Stop = 2
-    }
     [PluginActionId("com.barraider.wintools.service")]
     public class WindowsServiceAction : PluginBase
     {
@@ -41,10 +37,15 @@ namespace WinTools
             public string ServiceName { get; set; }
 
             [JsonProperty(PropertyName = "action")]
-            public ServiceActionEnum Action { get; set; }
+            public WindowsServiceManager.ServiceActionEnum Action { get; set; }
         }
 
         #region Private Members
+        private const string RUNNING_IMAGE_FILE = @"images\serviceRunning.png";
+        private const string STOPPED_IMAGE_FILE = @"images\serviceStopped.png";
+
+        private Image prefetchedRunningImage;
+        private Image prefetchedStoppedImage;
 
         private readonly PluginSettings settings;
 
@@ -68,7 +69,7 @@ namespace WinTools
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
         }
 
-        public override void KeyPressed(KeyPayload payload)
+        public async override void KeyPressed(KeyPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, "Key Pressed");
 
@@ -78,7 +79,14 @@ namespace WinTools
                 return;
             }
 
-            HandleServiceOperation();
+            if (HandleServiceOperation())
+            {
+                await Connection.ShowOk();
+            }
+            else
+            {
+                await Connection.ShowAlert();
+            }
         }
 
         public override void KeyReleased(KeyPayload payload) { }
@@ -86,6 +94,20 @@ namespace WinTools
         public async override void OnTick()
         {
             await Connection.SetTitleAsync($"{settings.ServiceName ?? ""}\n{settings.Action}");
+
+            var service = GetService();
+            if (service == null)
+            {
+                await Connection.SetImageAsync((string)null);
+            }
+            else if (service.Status == ServiceControllerStatus.Running)
+            {
+                await Connection.SetImageAsync(GetRunningImage());
+            }
+            else
+            {
+                await Connection.SetImageAsync(GetStoppedImage());
+            }
         }
 
         public override void ReceivedSettings(ReceivedSettingsPayload payload)
@@ -119,60 +141,45 @@ namespace WinTools
             return ServiceController.GetServices().Where(s => s.ServiceName == settings.ServiceName).FirstOrDefault();
         }
 
-        private void HandleServiceOperation()
+        private bool HandleServiceOperation()
         {
-            ServiceController service = GetService();
-            if (service == null)
+            try
             {
-                Logger.Instance.LogMessage(TracingLevel.ERROR, "HandleServiceOperation on null service");
-                return;
+                ServiceController service = GetService();
+                if (service == null)
+                {
+                    Logger.Instance.LogMessage(TracingLevel.ERROR, $"HandleServiceOperation for {settings.ServiceName} returned null!");
+                    return false;
+                }
+
+                WindowsServiceManager wsm = new WindowsServiceManager();
+                return wsm.HandleServiceAction(service, settings.Action, true);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} HandleServiceOperation Exception: {ex}");
             }
 
-            switch (settings.Action)
+            return false;
+        }
+            
+        private Image GetRunningImage()
+        {
+            if (prefetchedRunningImage == null)
             {
-                case ServiceActionEnum.Stop:
-                    StopService(service);
-                    break;
-                case ServiceActionEnum.Start:
-                    StartService(service);
-                    break;
-                case ServiceActionEnum.Restart:
-                    Logger.Instance.LogMessage(TracingLevel.INFO, $"Restarting {service.DisplayName}");
-                    StopService(service);
-                    int attempts = 120; // 120 attempts = 2 minutes
-                    while (service.Status != ServiceControllerStatus.Stopped && attempts > 0)
-                    {
-                        attempts--;
-                        Logger.Instance.LogMessage(TracingLevel.INFO, $"Waiting for {service.DisplayName} to stop...");
-                        Thread.Sleep(1000);
-                        service.Refresh();
-                    }
-                    Logger.Instance.LogMessage(TracingLevel.INFO, $"{service.DisplayName} stopped, attempting restart");
-                    StartService(service);
-                    break;
+                prefetchedRunningImage = Image.FromFile(RUNNING_IMAGE_FILE);
             }
+            return prefetchedRunningImage;
         }
 
-        private void StopService(ServiceController service)
-        {
-            if (service.Status != ServiceControllerStatus.Running)
-            {
-                Logger.Instance.LogMessage(TracingLevel.INFO, $"Not stopping {service.DisplayName} as status is: {service.Status}");
-                return;
-            }
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Stopping {service.DisplayName}");
-            service.Stop();
-        }
 
-        private void StartService(ServiceController service)
+        private Image GetStoppedImage()
         {
-            if (service.Status != ServiceControllerStatus.Stopped)
+            if (prefetchedStoppedImage == null)
             {
-                Logger.Instance.LogMessage(TracingLevel.INFO, $"Not starting {service.DisplayName} as status is: {service.Status}");
-                return;
+                prefetchedStoppedImage = Image.FromFile(STOPPED_IMAGE_FILE);
             }
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Starting {service.DisplayName}");
-            service.Start();
+            return prefetchedStoppedImage;
         }
 
         #endregion

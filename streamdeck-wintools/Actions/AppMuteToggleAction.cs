@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
@@ -15,13 +16,8 @@ using WinTools.Wrappers;
 
 namespace WinTools.Actions
 {
-    //---------------------------------------------------
-    //          BarRaider's Hall Of Fame
-    // Subscriber: ElectricHavoc
-    // Subscriber: ericrisch
-    //---------------------------------------------------
-    [PluginActionId("com.barraider.wintools.appvolumeset")]
-    public class AppVolumeSetAction : PluginBase
+    [PluginActionId("com.barraider.wintools.appmute")]
+    public class AppMuteToggleAction : PluginBase
     {
         private class PluginSettings
         {
@@ -31,11 +27,7 @@ namespace WinTools.Actions
                 {
                     Applications = null,
                     Application = String.Empty,
-                    Volume = DEFAULT_VOLUME_LEVEL.ToString(),
-                    ShowVolume = false,
                     ShowAppName = false,
-                    FadeVolume = false,
-                    FadeLength = DEFAULT_FADE_LENGTH_MS.ToString(),
                     AppCurrent = false,
                     AppSpecific = true
 
@@ -55,32 +47,18 @@ namespace WinTools.Actions
             [JsonProperty(PropertyName = "application")]
             public String Application { get; set; }
 
-            [JsonProperty(PropertyName = "volume")]
-            public String Volume { get; set; }
-
-            [JsonProperty(PropertyName = "showVolume")]
-            public bool ShowVolume { get; set; }
-
             [JsonProperty(PropertyName = "showAppName")]
             public bool ShowAppName { get; set; }
-
-            [JsonProperty(PropertyName = "fadeVolume")]
-            public bool FadeVolume { get; set; }
-
-            [JsonProperty(PropertyName = "fadeLength")]
-            public String FadeLength { get; set; }
         }
 
         #region Private Members
-        private const int DEFAULT_VOLUME_LEVEL = 100;
-        private const int DEFAULT_FADE_LENGTH_MS = 1000;
+        private const string MUTE_IMAGE_FILE = @"images\appMute.png";
 
+        private Image prefetchedMuteImage;
         private readonly PluginSettings settings;
-        private int volume = DEFAULT_VOLUME_LEVEL;
-        private int fadeLength = DEFAULT_FADE_LENGTH_MS;
 
         #endregion
-        public AppVolumeSetAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
+        public AppMuteToggleAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
         {
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
@@ -119,13 +97,17 @@ namespace WinTools.Actions
                 appName = HelperUtils.GetForegroundWindowProcess().ProcessName;
             }
 
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Setting {appName}'s volume to {volume}");
-            int totalFadeLength = 0;
-            if (settings.FadeVolume)
+            var appInfo = (await BRAudio.GetVolumeApplications()).Where(app => app.Name == appName).FirstOrDefault();
+            if (appInfo == null)
             {
-                totalFadeLength = fadeLength;
+
+                Logger.Instance.LogMessage(TracingLevel.ERROR, $"{this.GetType()} No valid volume application found for {appName}");
+                return;
             }
-            if (await BRAudio.SetAppVolume(appName, volume, totalFadeLength))
+
+
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"{this.GetType()} Toggling Mute for {appName}");
+            if (await BRAudio.ToggleAppMute(appName))
             {
                 await Connection.ShowOk();
             }
@@ -140,8 +122,7 @@ namespace WinTools.Actions
         public async override void OnTick() 
         {
             string title = String.Empty;
-            if ((settings.AppSpecific && String.IsNullOrEmpty(settings.Application))
-                || (!settings.ShowVolume && !settings.ShowAppName))
+            if (settings.AppSpecific && String.IsNullOrEmpty(settings.Application))
             {
                 return;
             }
@@ -155,32 +136,35 @@ namespace WinTools.Actions
             var appInfo = (await BRAudio.GetVolumeApplications()).Where(app => app.Name == appName).FirstOrDefault();
             if (appInfo == null)
             {
+                await Connection.SetImageAsync((string)null);
                 await Connection.SetTitleAsync(null);
                 return;
             }
 
+            if (appInfo.IsMuted)
+            {
+                await Connection.SetImageAsync(GetMuteImage());
+            }
+            else
+            {
+                await Connection.SetImageAsync((string)null);
+            }
+
             if (settings.ShowAppName)
             {
-                title = appName;
+                await Connection.SetTitleAsync(appName);
             }
 
-            if (settings.ShowVolume)
-            {
-                // Append volume on new line if app name is also selected
-                title = title + (String.IsNullOrEmpty(title) ? "" : "\n\n") + Math.Round(appInfo.Volume * 100).ToString();
-            }
-
-            await Connection.SetTitleAsync(title);
         }
 
         public override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
-            bool showTitle = settings.ShowVolume || settings.ShowAppName;
+            bool showTitle = settings.ShowAppName;
             Tools.AutoPopulateSettings(settings, payload.Settings);
             InitializeSettings();
 
             // Clear title if setting changed
-            if (settings.AppCurrent || showTitle != (settings.ShowVolume || settings.ShowAppName))
+            if (settings.AppCurrent || showTitle != settings.ShowAppName)
             {
                 Connection.SetTitleAsync((string)null);
             }
@@ -197,15 +181,6 @@ namespace WinTools.Actions
                 settings.AppSpecific = true;
             }
 
-            if (!Int32.TryParse(settings.Volume, out volume))
-            {
-                settings.Volume = DEFAULT_VOLUME_LEVEL.ToString();
-            }
-
-            if (!Int32.TryParse(settings.FadeLength, out fadeLength))
-            {
-                settings.FadeLength = DEFAULT_FADE_LENGTH_MS.ToString();
-            }
             SaveSettings();
         }
 
@@ -244,6 +219,14 @@ namespace WinTools.Actions
             }
         }
 
+        private Image GetMuteImage()
+        {
+            if (prefetchedMuteImage == null)
+            {
+                prefetchedMuteImage = Image.FromFile(MUTE_IMAGE_FILE);
+            }
+            return prefetchedMuteImage;
+        }
 
         #endregion
     }

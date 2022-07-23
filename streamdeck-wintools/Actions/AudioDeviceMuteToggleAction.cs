@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
@@ -15,13 +16,13 @@ using WinTools.Wrappers;
 
 namespace WinTools.Actions
 {
-    [PluginActionId("com.barraider.wintools.defaultaudiodevice")]
-    public class DefaultAudioDeviceAction : PluginBase
+    [PluginActionId("com.barraider.wintools.audiomute")]
+    public class AudioDeviceMuteToggleAction : PluginBase
     {
         private enum DeviceTypes
         {
             Playback = 0,
-            Recording = 1
+            Recording = 1,
         }
 
         private class PluginSettings
@@ -33,7 +34,6 @@ namespace WinTools.Actions
                     DeviceType = DeviceTypes.Playback,
                     Devices = null,
                     Device = String.Empty,
-                    SetDefaultCommunication = false
                 };
                 return instance;
             }
@@ -46,16 +46,19 @@ namespace WinTools.Actions
 
             [JsonProperty(PropertyName = "device")]
             public String Device { get; set; }
-
-            [JsonProperty(PropertyName = "commDevice")]
-            public bool SetDefaultCommunication { get; set; }
         }
 
         #region Private Members
+        private const string DEFAULT_DEVICE_NAME = "- Default Device -";
+        private const string MUTE_IMAGE_FILE = @"images\audioMute.png";
+
+        private Image prefetchedMuteImage;
         private readonly PluginSettings settings;
+        bool disableStatusCheck = false;
 
         #endregion
-        public DefaultAudioDeviceAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
+
+        public AudioDeviceMuteToggleAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
         {
             if (payload.Settings == null || payload.Settings.Count == 0)
             {
@@ -86,28 +89,22 @@ namespace WinTools.Actions
             if (String.IsNullOrEmpty(settings.Device))
             {
                 Logger.Instance.LogMessage(TracingLevel.WARN, $"{GetType()} Key Pressed but no device is set");
+                await Connection.ShowAlert();
                 return;
             }
 
-            Logger.Instance.LogMessage(TracingLevel.INFO, $"Modifying default {settings.DeviceType} device to be {settings.Device}");
-            bool result = false;
+            string device = settings.Device == DEFAULT_DEVICE_NAME ? BRAudio.DEFAULT_ENDPOINT : settings.Device;
+            Logger.Instance.LogMessage(TracingLevel.INFO, $"Toggling Mute for {settings.Device}");
+            bool result;
             if (settings.DeviceType == DeviceTypes.Playback)
             {
-                result = await BRAudio.SetDefaultPlaybackDeviceByDeviceFriendlyName(settings.Device);
-                if (result && settings.SetDefaultCommunication)
-                {
-                    result = await BRAudio.SetDefaultPlaybackCommunicationDeviceFriendlyName(settings.Device);
-                }
+                result = BRAudio.TogglePlaybackDeviceMuteStatus(device);
             }
-            else // Recording Device
+            else
             {
-                result = await BRAudio.SetDefaultRecordingDeviceByDeviceFriendlyName(settings.Device);
-                if (result && settings.SetDefaultCommunication)
-                {
-                    result = await BRAudio.SetDefaultRecordingCommunicationDeviceFriendlyName(settings.Device);
-                }
+                result =  BRAudio.ToggleRecordingDeviceMuteStatus(device);
             }
-            
+
             if (result)
             {
                 await Connection.ShowOk();
@@ -120,17 +117,50 @@ namespace WinTools.Actions
 
         public override void KeyReleased(KeyPayload payload) { }
 
-        public override void OnTick() { }
-        
-        public override void ReceivedSettings(ReceivedSettingsPayload payload)
+        public async override void OnTick()
+        {
+            if (String.IsNullOrEmpty(settings.Device) || disableStatusCheck)
+            {
+                return;
+            }
+
+            bool? status;
+            if (settings.DeviceType == DeviceTypes.Playback)
+            {
+                status = BRAudio.GetPlaybackDeviceMuteStatus(settings.Device == DEFAULT_DEVICE_NAME ? BRAudio.DEFAULT_ENDPOINT : settings.Device);
+            }
+            else
+            {
+                status = BRAudio.GetRecordingDeviceMuteStatus(settings.Device == DEFAULT_DEVICE_NAME ? BRAudio.DEFAULT_ENDPOINT : settings.Device);
+            }
+
+            if (!status.HasValue)
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"{this.GetType()} Exception raised for Mute Status for device {settings.Device}, halting updates");
+                disableStatusCheck = true;
+                return;
+            }
+
+            if (status.Value) // Is Muted
+            {
+                await Connection.SetImageAsync(GetMuteImage());
+            }
+            else
+            {
+                await Connection.SetImageAsync((string)null);
+            }
+        }
+
+        public async override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
             var deviceType = settings.DeviceType;
             Tools.AutoPopulateSettings(settings, payload.Settings);
+            InitializeSettings();
             if (deviceType != settings.DeviceType)
             {
+                await Connection.SetImageAsync((string)null);
                 FetchDevices();
             }
-            InitializeSettings();
         }
 
         public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }
@@ -139,6 +169,8 @@ namespace WinTools.Actions
 
         private void InitializeSettings()
         {
+            disableStatusCheck = false;
+            SaveSettings();
         }
 
         private Task SaveSettings()
@@ -157,6 +189,7 @@ namespace WinTools.Actions
                 return;
             }
             Logger.Instance.LogMessage(TracingLevel.INFO, $"{GetType()} FetchPlaybackDevices returned {settings.Devices.Count} devices");
+            settings.Devices.Insert(0, new DeviceEndpoint(DEFAULT_DEVICE_NAME));
             await SaveSettings();
         }
 
@@ -171,6 +204,7 @@ namespace WinTools.Actions
                 return;
             }
             Logger.Instance.LogMessage(TracingLevel.INFO, $"{GetType()} FetchRecordingDevices returned {settings.Devices.Count} devices");
+            settings.Devices.Insert(0, new DeviceEndpoint(DEFAULT_DEVICE_NAME));
             await SaveSettings();
         }
 
@@ -208,7 +242,14 @@ namespace WinTools.Actions
             FetchDevices();
         }
 
-
+        private Image GetMuteImage()
+        {
+            if (prefetchedMuteImage == null)
+            {
+                prefetchedMuteImage = Image.FromFile(MUTE_IMAGE_FILE);
+            }
+            return prefetchedMuteImage;
+        }
 
         #endregion
     }

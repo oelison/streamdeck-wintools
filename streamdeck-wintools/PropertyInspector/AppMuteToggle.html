@@ -5,10 +5,10 @@
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
     <meta name=apple-mobile-web-app-capable content=yes>
     <meta name=apple-mobile-web-app-status-bar-style content=black>
-    <title>App Volume Adjuster Settings</title>
+    <title>App Mute Toggle</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdpi.css">
     <script src="https://cdn.jsdelivr.net/gh/barraider/streamdeck-easypi@latest/src/sdtools.common.js"></script>
-    <script src="AppVolumeAdjuster.js"></script>
+    <script src="AppMuteToggle.js"></script>
 </head>
 <body>
     <div class="sdpi-wrapper">
@@ -34,22 +34,9 @@
                 <div class="sdpi-item-label">Application</div>
                 <select class="sdpi-item-value select sdProperty sdList" id="applications" oninput="setSettings()" sdListTextProperty="name" sdListValueProperty="name" sdValueField="application"></select>
             </div>
-            <div class="sdpi-item" id="dvRefresh">
-                <div class="sdpi-item-label">Refresh</div>
-                <button class="sdpi-item-value" onclick="refreshApplications()">Refresh Applications</button>
-            </div>
-            <div class="sdpi-item">
-                <details class="message info">
-                    <summary>App must be playing sound to be shown in list</summary>
-                </details>
-            </div>
-        </div>
-        <div type="checkbox" class="sdpi-item" id="dvShowVolume">
-            <div class="sdpi-item-label">Show Volume</div>
-            <div class="sdpi-item-value">
-                <input id="showVolume" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
-                <label for="showVolume" class="sdpi-item-label"><span></span>Show volume on key</label>
-            </div>
+            <details class="message">
+                <summary>App must be playing sound to be shown in list</summary>
+            </details>
         </div>
         <div type="checkbox" class="sdpi-item" id="dvShowAppName">
             <div class="sdpi-item-label">Show Name</div>
@@ -57,26 +44,6 @@
                 <input id="showAppName" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
                 <label for="showAppName" class="sdpi-item-label"><span></span>Show app name on key</label>
             </div>
-        </div>
-        <hr />
-        <div class="sdpi-item" id="dvVolumeStep">
-            <div class="sdpi-item-label">Volume Step</div>
-            <select class="sdpi-item-value select sdProperty" id="volumeStep" oninput="setSettings()">
-                <option value="-25">-25</option>
-                <option value="-20">-20</option>
-                <option value="-15">-15</option>
-                <option value="-10">-10</option>
-                <option value="-5">-5</option>
-                <option value="-3">-3</option>
-                <option value="-1">-1</option>
-                <option value="1">+1</option>
-                <option value="3">+3</option>
-                <option value="5">+5</option>
-                <option value="10">+10</option>
-                <option value="15" selected>+15</option>
-                <option value="20">+20</option>
-                <option value="25">+25</option>
-            </select>
         </div>
     </div>
 </body>

@@ -157,6 +157,16 @@ namespace WinTools.Actions
             if (settings.ShowAppName)
             {
                 title = settings.Application;
+                if (settings.AppCurrent)
+                {
+                    title = HelperUtils.GetForegroundWindowProcess().ProcessName;
+                    var appInfo = (await BRAudio.GetVolumeApplications()).Where(app => app.Name == title).FirstOrDefault();
+                    if (appInfo == null)
+                    {
+                        title = String.Empty;
+                    }
+                    
+                }
             }
 
             if (settings.ShowDeviceName && !String.IsNullOrEmpty(settings.Device))

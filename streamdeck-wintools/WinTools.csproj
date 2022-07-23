@@ -133,6 +133,8 @@
     <Compile Include="Backend\ForceForegroundSettings.cs" />
     <Compile Include="Backend\HelperUtils.cs" />
     <Compile Include="Backend\KeyboardManager.cs" />
+    <Compile Include="Backend\WindowsServiceManager.cs" />
+    <Compile Include="Backend\WinToolsRunnerHandler.cs" />
     <Compile Include="MonitorWrapper\MonitorBrightnessController.cs" />
     <Compile Include="Wrappers\DeviceEndpoint.cs" />
     <Compile Include="Wrappers\KeyStatus.cs" />
@@ -169,6 +171,10 @@
     <Compile Include="Wrappers\WindowsService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\WinToolsRunner\bin\Release\WinToolsRunner.exe.config">
+      <Link>WinToolsRunner.exe.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config" />
     <None Include="manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -184,6 +190,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\WinToolsRunner\bin\Release\WinToolsRunner.exe">
+      <Link>WinToolsRunner.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="brlogo.ico" />
     <Content Include="Images\appMute.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -444,6 +454,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\powerSelected.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\serviceAction%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\serviceAction.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\serviceRunning.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\serviceStopped.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\soundAction%402x.png">

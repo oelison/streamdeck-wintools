@@ -114,7 +114,7 @@
       ],
       "SupportedInMultiActions": true,
       "DisableCaching": true,
-      "Tooltip": "Mutes/Unmutes a specific application",
+      "Tooltip": "Mutes/Unmutes a playback/recording device",
       "UUID": "com.barraider.wintools.audiomute",
       "PropertyInspectorPath": "PropertyInspector/AudioDeviceMuteToggle.html"
     },
@@ -300,6 +300,23 @@
       "UUID": "com.barraider.wintools.lock"
     },
     {
+      "Icon": "Images/soundIcon",
+      "Name": "Mic Mute Toggle",
+      "States": [
+        {
+          "Image": "Images/soundAction",
+          "TitleAlignment": "bottom",
+          "FontSize": "11",
+          "TitleColor": "White"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "DisableCaching": true,
+      "Tooltip": "Mutes/Unmutes your mic",
+      "UUID": "com.barraider.wintools.audiomute",
+      "PropertyInspectorPath": "PropertyInspector/AudioDeviceMuteToggle.html"
+    },
+    {
       "Icon": "Images/multiClipIcon",
       "Name": "Multi Clip",
       "States": [
@@ -405,7 +422,7 @@
       "Name": "Service Start/Stop",
       "States": [
         {
-          "Image": "Images/pluginAction",
+          "Image": "Images/serviceAction",
           "TitleAlignment": "middle",
           "FontSize": "12"
         }

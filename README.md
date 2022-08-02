@@ -3,19 +3,20 @@ Advanced set of useful plugins for controlling Windows from the Stream Deck
 
 ## New in v1.7
 *Hang on, this is a long one...*  
-- :new: `App Mute Toggle` action allows you to mute/unmute a specific app, including the **CURRENT ACTIVE WINDOW**
-- :new: `Audio Device/Mic Mute Toggle` lets you mute/unmute any device (including mics)
-- :new: `Keyboard Caps/Num/Scroll Toggle` allows you to control the Caps/Num/Scroll lock keys and see their status
-- `Service Start\Stop` no longer requires Stream Deck to run as Admin! :fire: 
-    - Also, now shows you the status of the service (Running/Stopped)
-
-What's New:
 **Audio/Volume:**
 - You can now use `App Volume Adjuster` and `App Volume Set` to control the volume of the **CURRENT ACTIVE WINDOW**. :fire:
 - :new: Control your Windows System volume (not just specific apps) with the   `Audio Device Volume`  actions. 
 Pro-Tip: Also supports tweaking your Microphone levels.
+- :new: `App Mute Toggle` action allows you to mute/unmute a specific app, including the **CURRENT ACTIVE WINDOW**
+- :new: `Audio Device/Mic Mute Toggle` lets you mute/unmute any device (including mics)
 - `App Audio Mixer` now supports filtering out apps you don't want shown
 - `Default Audio Device` now supports setting the **Default Communication Device**
+
+**Misc**
+- :new: `Keyboard Caps/Num/Scroll Toggle` allows you to control the Caps/Num/Scroll lock keys and see their status
+- `Service Start\Stop` no longer requires Stream Deck to run as Admin! :fire: 
+    - Also, now shows you the status of the service (Running/Stopped)
+
 
 **Notifications**
 - :new: `Notification Popup` action lets you create custom Windows notifications from the Stream Deck

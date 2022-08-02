@@ -1,30 +1,41 @@
 # Win Tools
 Advanced set of useful plugins for controlling Windows from the Stream Deck
 
-## New in v1.6
-What's New:
-- **Windows 11 Support** - All features (including Volume and Virtual Desktops) should now work on both Win10 and Win11.
-- Bug fixes and improvements
+## New in v1.7
+*Hang on, this is a long one...*  
+- :new: `App Mute Toggle` action allows you to mute/unmute a specific app, including the **CURRENT ACTIVE WINDOW**
+- :new: `Audio Device/Mic Mute Toggle` lets you mute/unmute any device (including mics)
+- :new: `Keyboard Caps/Num/Scroll Toggle` allows you to control the Caps/Num/Scroll lock keys and see their status
+- `Service Start\Stop` no longer requires Stream Deck to run as Admin! :fire: 
+    - Also, now shows you the status of the service (Running/Stopped)
 
-## New in v1.4
-- :new: `App Playback Device` action allows you to change the playback device of a specific application from the Stream Deck. Example: Click to move ONLY Spotify to go to your speakers, while the rest goes to your headset.
-    - **Bonus:** Choosing the `Current Focused Window` option will change the playback device to whichever windows is in the foreground
-    - **Bonus #2:** Already includes Multi-Action support
-- :new: `Default Audio Device` action allows you to change the system-default **playback** or **recording** device from the Stream Deck 
-    - **Bonus:** Already includes Multi-Action support
-- :new: `Keyboard Language` action shows you what language you're keyboard is in. Pressing the button will rotate between the different languages installed. (No longer typing complete sentences in the wrong language :facepalm: )
-- :new: `Keyboard Leds` :keyboard: action shows you the status of your Numlock, Capslock and Scrollock on the Stream Deck. 
-    - **Bonus:** You can set the key press to LOCK their state so they can't be modified
-- You can now clear the contents of all Multi Clips (by adding the action to a Multi-Action and choosing that option)
-- Limited length of title in Multi Clip to 50 characters + Trimmed spaces
-- Deprecated `MouseLocation` action as it has now moved into SuperMacro  
-- Improved Disk Drive robustness when dealing with disconnected network drives
+What's New:
+**Audio/Volume:**
+- You can now use `App Volume Adjuster` and `App Volume Set` to control the volume of the **CURRENT ACTIVE WINDOW**. :fire:
+- :new: Control your Windows System volume (not just specific apps) with the   `Audio Device Volume`  actions. 
+Pro-Tip: Also supports tweaking your Microphone levels.
+- `App Audio Mixer` now supports filtering out apps you don't want shown
+- `Default Audio Device` now supports setting the **Default Communication Device**
+
+**Notifications**
+- :new: `Notification Popup` action lets you create custom Windows notifications from the Stream Deck
+
+**Networking**
+- :new: `Bluetooth/Wifi Toggle` from the stream deck :fire:
+- :new: `IP Info` action to see your Internet IP
+- `Network Card Info` now changes color to red if the network is disconnected
+
+**Virtual Desktop**
+- :new: New `Virtual Desktop - Show` action displays the name of the current VD.
+- `Switch Virtual Desktop` will now change color to green if you're already in that VD
 
 ## Features:
 - `App Audio Mixer` - Control the volume of all your Windows apps straight from the Stream Deck!!!
     - Mixer mode shows you all relevant apps and you can quickly +/- the volume for each or click the app icon to mute it. Full Screen support for both Classic and XL
-- `App Volume Adjuster` and `App Volume Set` allow quick volume changes to one specific app.
+- `App Volume Adjuster` and `App Volume Set` allow quick volume changes to one specific app 🆕 also supports modifying the volume of the Currently Active window
+- `Audio Device Adjuster` and `Audio Volume Set` do the same for your Playback or Recording devices
 - `Drive Info` shows you stats on your Hard Drives and warns you when space is getting low
+- `Keyboard Leds` and `Keyboard Language` allow 
 - `Latest File Copy` - Monitors a directory for changes and copies the last modified file to a customizable location. Great to ensure you always have the latest Instant Replay available at a specific location.
 - `Lock` Action... well... Locks your Computer
 - `Multi Clip` action - Turns your Stream Deck into multiple clipboards!
@@ -56,6 +67,25 @@ Please contact the developer. Contact information is available at https://barrai
 
 
 ## Change Log
+
+## New in v1.6
+What's New:
+- **Windows 11 Support** - All features (including Volume and Virtual Desktops) should now work on both Win10 and Win11.
+- Bug fixes and improvements
+
+## New in v1.4
+- :new: `App Playback Device` action allows you to change the playback device of a specific application from the Stream Deck. Example: Click to move ONLY Spotify to go to your speakers, while the rest goes to your headset.
+    - **Bonus:** Choosing the `Current Focused Window` option will change the playback device to whichever windows is in the foreground
+    - **Bonus #2:** Already includes Multi-Action support
+- :new: `Default Audio Device` action allows you to change the system-default **playback** or **recording** device from the Stream Deck 
+    - **Bonus:** Already includes Multi-Action support
+- :new: `Keyboard Language` action shows you what language you're keyboard is in. Pressing the button will rotate between the different languages installed. (No longer typing complete sentences in the wrong language :facepalm: )
+- :new: `Keyboard Leds` :keyboard: action shows you the status of your Numlock, Capslock and Scrollock on the Stream Deck. 
+    - **Bonus:** You can set the key press to LOCK their state so they can't be modified
+- You can now clear the contents of all Multi Clips (by adding the action to a Multi-Action and choosing that option)
+- Limited length of title in Multi Clip to 50 characters + Trimmed spaces
+- Deprecated `MouseLocation` action as it has now moved into SuperMacro  
+- Improved Disk Drive robustness when dealing with disconnected network drives
 
 ## New in v1.3
 - :new: ***VIRTUAL DESKTOP SUPPORT***: Create, Delete and Switch to a Windows Virtual Desktop all from the Stream Deck
